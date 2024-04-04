@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../components/Sidebar'
 import RightSidebar from '../components/RightSidebar'
 import Posts from '../components/Posts'
+import CreatePost from '../components/CreatePost'
 
 const Home = () => {
   return (
@@ -10,6 +11,7 @@ const Home = () => {
             <Sidebar />
         </div>
         <div className='main2'>
+          <CreatePost/>
           <Posts/>
         </div>
         <div className='main3'>

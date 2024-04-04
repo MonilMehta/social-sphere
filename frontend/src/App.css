@@ -1,14 +1,9 @@
-.sidebar {
-  width: 250px; /* Fixed width for the sidebar */
-  height: 100%;
-  background-color: #060505;
-  position: fixed;
-}
+
 
 .mainpage {
   display: flex;
   flex-direction: row;
-  background-color: #000000;
+  background-color: #16202C;
   height: 100vh;
   width: 100vw;
 }
@@ -42,10 +37,12 @@
 .postcard {
   padding: 20px;
   margin-bottom: 40px;
+  margin-top: 30px;
   width: 40vw;
   height: 80vh;
   border-radius: 15px;
   border: 2px solid #EEEEEE;
+  background-color: #535C91;
 }
 .postcard img{
   border-radius: 7px;
@@ -56,75 +53,10 @@
   display: flex;
   justify-content: center;
 }
-.textbody{
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  font-size: 15px;
-  margin-left: 30px;
-}
+
 
 .social-media-posts {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-
-.profile-img{
-  max-width: 50px;
-  max-height: 50px;
-  border-radius: 50%;
-}
-.post-icons{
-  display: flex;
-  flex-direction: row;
-  padding: 0px;
-  margin: 0px;
-  margin-left: 30px;
-}
-.post-details{
-  display: flex;
-  flex-direction: row;
-  margin-left: auto;
-  margin-right: 35px;
-}
-.post-details h4{
-  margin-left: 10px;
-}
-.icon-wrapper {
-  margin-right: 20px;
-  margin-top: 20px;
-}
-.post-icons h6{
-  margin-left: 10px;
-  padding: 0;
-  
-}
-.user-details{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 20px;
-  margin-left: 30px;
-}
-.user-details h3{
-  margin-left: 10px;
-
-}
-.sidebar-icons {
-  display: flex;
-}
-
-.sidebar-icons h3 {
-  margin-left: 8px; /* Adjust margin between icon and text */
-  font-size: 24px;
-  margin-top: 50px;
-  
-}
-.sidebar-icons > .faiconss{
-  margin-left: 10px;
-  width: 30px;
-  height: 30px;
-  margin-top:50px;
-  margin-right: 2px;
 }

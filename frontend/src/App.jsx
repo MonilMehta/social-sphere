@@ -4,16 +4,21 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import SignIn from './pages/SignIn';
 import './App.css';
+import Navbar from './components/Navbar';
 const App = () => {
 
   return (
+    <div>
+    
     <Router>
+    <Navbar />
       <Routes>
         <Route path='' element={<Home/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/signin' element={<SignIn/>} />
       </Routes>
     </Router>
+    </div>
   );
 };
 
