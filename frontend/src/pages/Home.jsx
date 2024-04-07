@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar'
 import RightSidebar from '../components/RightSidebar'
 import Posts from '../components/Posts'
 import CreatePost from '../components/CreatePost'
-
+// import Navbar from '../components/Navbar'
 const Home = () => {
   return (
     <div className='mainpage'>

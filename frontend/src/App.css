@@ -22,16 +22,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 .main3 {
   flex: 0 0 250px; /* Fixed width for the right sidebar */
   height: 300px;
-  border: 2px solid white;
+  /* border: 2px solid white; */
   padding: 40px;
   margin-top: 40px;
   margin-right: 40px;
   border-radius: 20px;
+  right: 0;
+  width: 15rem;
+  
 }
 
 .postcard {
