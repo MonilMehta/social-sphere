@@ -1,1 +1,1 @@
-export const DB_NAME = "social-sphere";
+export const DB_NAME = "socialsphere";

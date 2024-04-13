@@ -15,6 +15,13 @@ app.use(cookieParser());
 
 app.use(express.static("public"));
 
-// import and declare routes here
+app.use(express.json());
+
+
+// import routes here
+import postRouter from "./routes/post.routes.js";
+
+// declare routes here
+app.use("/api/v1/posts", postRouter);
 
 export { app };
