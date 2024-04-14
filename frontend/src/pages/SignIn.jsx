@@ -47,7 +47,7 @@ function SignIn() {
   const theme = createTheme();
 
   return (
-    <div style={{background:'#16202C',color:'white'}}>
+    <div style={{background:'white',color:'black'}}>
       <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -104,7 +104,7 @@ function SignIn() {
             </Button>
             <Grid container>
               <Grid item>
-                <Lk to="/signup" style={{textDecoration:'none',color:'white'}}>Don't have an account? Sign Up</Lk>
+                <Lk to="/signup" style={{textDecoration:'none',color:'black'}}>Don't have an account? Sign Up</Lk>
               </Grid>
             </Grid>
           </Box>

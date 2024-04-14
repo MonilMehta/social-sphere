@@ -70,7 +70,7 @@ export default function Signup() {
   };
 
   return (
-    <div style={{background:'#16202C',color:'white'}}>
+    <div style={{background:'white',color:'black'}}>
       <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -173,7 +173,7 @@ export default function Signup() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                   <Lk to="/signin" style={{textDecoration:'none',color:'white'}}> Already have an account? Sign in</Lk>
+                   <Lk to="/signin" style={{textDecoration:'none',color:'black'}}> Already have an account? Sign in</Lk>
               </Grid>
             </Grid>
           </Box>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PostCard from './PostCard'; // Import the PostCard component
-import '../styles/Post.css';
+
 const Posts = () => {
   const [posts, setPosts] = useState([]);
 
@@ -17,7 +17,7 @@ const Posts = () => {
   }, []);
 
   return (
-    <div className="social-media-posts">
+    <div className="flex flex-col items-start">
       {posts.map(post => (
         <PostCard key={post.id} post={post} /> // Pass each post as a prop to PostCard
       ))}

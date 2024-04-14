@@ -5,14 +5,12 @@ import Signup from './pages/Signup';
 import SignIn from './pages/SignIn';
 import './App.css';
 import Landing from './pages/Landing';
-// import Navbar from './components/Navbar';
 const App = () => {
 
   return (
     <div>
     
     <Router>
-    {/* <Navbar /> */}
       <Routes>
         <Route path='/' element={<Landing/>} />
         <Route path='/Home' element={<Home/>} />
