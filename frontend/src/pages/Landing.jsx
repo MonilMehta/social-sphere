@@ -35,7 +35,6 @@ const Landing = () => {
             cursor: 'pointer',
             fontFamily: 'Poppins',
             textDecoration:'none',
-            color: 'black',
           }}> <Lk to='/signup'>Create Account</Lk>
           </button>
           <h4 style={{ fontSize: '1rem', marginTop: '3rem' }}>Already have an account?</h4>

@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import SignIn from './pages/SignIn';
 import './App.css';
 import Landing from './pages/Landing';
+import Profile from './pages/Profile';
 const App = () => {
 
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path='/Home' element={<Home/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/signin' element={<SignIn/>} />
+        <Route path='/profile' element={<Profile/>} />
       </Routes>
     </Router>
     </div>
