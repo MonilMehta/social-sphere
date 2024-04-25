@@ -1,8 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
 import { Comment } from "../models/comment.models.js";
 import { Post } from "../models/post.models.js";
-import { ApiError } from "../utils/ApiError.js";
 import mongoose from "mongoose";
 
 const createComment = asyncHandler(async (req, res) => {
@@ -43,6 +43,11 @@ const getComments = asyncHandler(async (req, res) => {
 
   if (!mongoose.isValidObjectId(postId)) {
     throw new ApiError(404, "Invalid Post Id");
+  }
+
+  const post = await Post.findById(postId)
+  if(!post){
+    throw new ApiError(404, "Post not found")
   }
 
   const comments = await Comment.aggregate([
