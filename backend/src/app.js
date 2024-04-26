@@ -21,10 +21,12 @@ app.use(express.json());
 import postRouter from "./routes/post.routes.js";
 import commentRouter from "./routes/comment.routes.js";
 import replyRouter from "./routes/reply.routes.js";
+import likeRouter from "./routes/like.routes.js";
 
 // declare routes here
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/replies", replyRouter);
+app.use("/api/v1/likes", likeRouter);
 
 export { app };
