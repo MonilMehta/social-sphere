@@ -49,10 +49,11 @@ const CreatePost = () => {
 
   return (
     <>
-      <button
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        onClick={openModal}
-      >
+          <button
+          className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={openModal}
+          style={{ backgroundColor: 'black', color: 'white', padding: '15px 30px', cursor: 'pointer', fontFamily: 'Poppins', textDecoration:'none'}}
+        >
         Create Post
       </button>
       {isOpen && (

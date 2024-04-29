@@ -44,7 +44,7 @@ const PostCard = ({ post }) => {
     //     <p>{post.title}</p>
     //   </div>
     // </div>
-    <div className='p-5 mb-10 mt-8 w-[35vw] h-[70vh] rounded-2xl border-2'>
+    <div className='p-5 mb-10 mt-8 w-[35vw] h-[90vh] rounded-2xl border-2'>
       <div className='flex flex-row items-center mb-5 ml-8'>
         <img src={image} alt='User avatar' className='w-12 h-12 rounded-full' />
         <h3 className='ml-2 text-black'>@{author}</h3>

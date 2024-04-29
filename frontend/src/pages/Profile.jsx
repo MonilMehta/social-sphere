@@ -1,255 +1,77 @@
 import * as React from 'react';
-import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import Divider from '@mui/joy/Divider';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import FormHelperText from '@mui/joy/FormHelperText';
-import Input from '@mui/joy/Input';
-import IconButton from '@mui/joy/IconButton';
-import Textarea from '@mui/joy/Textarea';
-import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
-import Breadcrumbs from '@mui/joy/Breadcrumbs';
-import Link from '@mui/joy/Link';
-import Card from '@mui/joy/Card';
-import CardActions from '@mui/joy/CardActions';
-import CardOverflow from '@mui/joy/CardOverflow';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import Grid from '@mui/joy/Grid';
+import IconButton from '@mui/joy/IconButton';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import Avatar from '@mui/joy/Avatar';
+import Button from '@mui/joy/Button';
 import { Link as Lk } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 
-export default function Profile() {
-  const [selectedImage, setSelectedImage] = React.useState('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286');
+const posts = [
+  { id: 1, imageUrl: 'https://via.placeholder.com/400', title: 'Post 1' },
+  { id: 2, imageUrl: 'https://via.placeholder.com/400', title: 'Post 2' },
+  { id: 3, imageUrl: 'https://via.placeholder.com/400', title: 'Post 3' },
+  { id: 4, imageUrl: 'https://via.placeholder.com/400', title: 'Post 4' },
+  { id: 5, imageUrl: 'https://via.placeholder.com/400', title: 'Post 5' },
+  { id: 6, imageUrl: 'https://via.placeholder.com/400', title: 'Post 6' },
+  { id: 7, imageUrl: 'https://via.placeholder.com/400', title: 'Post 7' },
+  { id: 8, imageUrl: 'https://via.placeholder.com/400', title: 'Post 8' },
+  { id: 9, imageUrl: 'https://via.placeholder.com/400', title: 'Post 9' },
+];
 
-  const fileInputRef = React.useRef(null);
-
-  const handleEditIconClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setSelectedImage(reader.result);
-    };
-
-    reader.readAsDataURL(file);
-  };
+export default function ProfilePage({ user }) {
+  const { profileImage, name, followersCount } = user || {};
 
   return (
-    <Box sx={{ flex: 1, width: '100%' }}>
-      <Box
-        sx={{
-          position: 'sticky',
-          top: { sm: -100, md: -110 },
-          bgcolor: 'background.body',
-          zIndex: 9995,
-        }}
-      >
-        <Box sx={{ px: { xs: 2, md: 6 } }}>
-          <Breadcrumbs
-            size="sm"
-            aria-label="breadcrumbs"
-            separator={<ChevronRightRoundedIcon fontSize="sm" />}
-            sx={{ pl: 0 }}
-          >
-            <Link
-              underline="none"
-              color="neutral"
-              href="#some-link"
-              aria-label="Home"
-            >
-             <Lk to='/Home' style={{textDecoration:'none'}}><HomeRoundedIcon /></Lk>
-            </Link>
-            <Typography color="primary" fontWeight={500} fontSize={12}>
-              My profile
-            </Typography>
-          </Breadcrumbs>
-          <Typography level="h2" component="h1" sx={{ mt: 1, mb: 2 }}>
-            My profile
-          </Typography>
-        </Box>
+    <Box sx={{ display: 'flex',flexDirection:'column' }}>
+      {/* Sidebar */}
+      <Navbar />
+      
+      <Box sx={{ display: 'flex',flexDirection:'row',marginTop:'70px' }}>
+      <Sidebar />
+      <Box sx={{ flex: 2 }}>
+        {/* Navbar */}
         
+        
+        {/* Profile Content */}
+        <Box sx={{ p: 4,marginLeft:'300px',marginTop:'10px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 10 }}>
+          <Avatar sx={{ width: 200, height: 200 }} alt="Profile Image" src={profileImage || 'https://via.placeholder.com/150'} />
+          <Box sx={{ ml: 15 }}>
+            {/* Increased font size for name */}
+            <Typography variant="h2" sx={{ fontSize: '3rem' }}>{name || 'John Doe'}</Typography>
+            {/* Increased font size for followers count */}
+            <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.5rem' }}>
+              {followersCount || 10} followers
+            </Typography>
+            <Lk to="/edit-profile" style={{ textDecoration: 'none' }}>
+              {/* Increased font size for Edit Profile button */}
+              <Button variant="outlined" startIcon={<EditRoundedIcon />} sx={{ fontSize: '1.5rem', mt: 2 }}>
+                Edit Profile
+              </Button>
+            </Lk>
+          </Box>
+          </Box>
+          <Grid container spacing={3}>
+            {posts.map((post) => (
+              <Grid key={post.id} item xs={4}>
+                <Card style={{ width: '80%'}}>
+                  <CardContent>
+                    <Typography variant="h6">{post.title}</Typography>
+                    <img src={post.imageUrl} alt={post.title} style={{ width: '100%', marginTop: 10 }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Box>
-      <Stack
-        spacing={4}
-        sx={{
-          display: 'flex',
-          maxWidth: '800px',
-          mx: 'auto',
-          px: { xs: 2, md: 6 },
-          py: { xs: 2, md: 3 },
-        }}
-      >
-        <Card>
-          <Box sx={{ mb: 1 }}>
-            <Typography level="title-md">Personal info</Typography>
-            <Typography level="body-sm">
-              Customize how your profile information will apper to the networks.
-            </Typography>
-          </Box>
-          <Divider />
-          <Stack
-            direction="row"
-            spacing={3}
-            sx={{ display: { xs: 'none', md: 'flex' }, my: 1 }}
-          >
-            <Stack direction="column" spacing={1}>
-              <AspectRatio
-                ratio="1"
-                maxHeight={200}
-                sx={{ flex: 1, minWidth: 120, borderRadius: '100%' }}
-              >
-                <img
-                  src={selectedImage}
-                  loading="lazy"
-                  alt=""
-                />
-              </AspectRatio>
-              <input
-                type="file"
-                style={{ display: 'none' }}
-                ref={fileInputRef}
-                onChange={handleFileInputChange} // Add onChange event handler
-              />
-              <IconButton
-                aria-label="upload new picture"
-                size="sm"
-                variant="outlined"
-                color="neutral"
-                sx={{
-                  bgcolor: 'background.body',
-                  position: 'absolute',
-                  zIndex: 2,
-                  borderRadius: '50%',
-                  left: 100,
-                  top: 170,
-                  boxShadow: 'sm',
-                }}
-                onClick={handleEditIconClick}
-              >
-                <EditRoundedIcon />
-              </IconButton>
-            </Stack>
-            <Stack spacing={2} sx={{ flexGrow: 1 }}>
-              <Stack spacing={1}>
-                <FormLabel>Name</FormLabel>
-                <FormControl
-                  sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
-                >
-                  <Input size="sm" placeholder="First name" />
-                  <Input size="sm" placeholder="Last name" sx={{ flexGrow: 1 }} />
-                </FormControl>
-              </Stack>
-            </Stack>
-          </Stack>
-          <Stack
-            direction="column"
-            spacing={2}
-            sx={{ display: { xs: 'flex', md: 'none' }, my: 1 }}
-          >
-            <Stack direction="row" spacing={2}>
-              <Stack direction="column" spacing={1}>
-                <AspectRatio
-                  ratio="1"
-                  maxHeight={108}
-                  sx={{ flex: 1, minWidth: 108, borderRadius: '100%' }}
-                >
-                  <img
-                    src={selectedImage}
-                    loading="lazy"
-                    alt=""
-                  />
-                </AspectRatio>
-                <input
-                  type="file"
-                  style={{ display: 'none' }}
-                  ref={fileInputRef}
-                  onChange={handleFileInputChange} // Add onChange event handler
-                />
-                <IconButton
-                  aria-label="upload new picture"
-                  size="sm"
-                  variant="outlined"
-                  color="neutral"
-                  sx={{
-                    bgcolor: 'background.body',
-                    position: 'absolute',
-                    zIndex: 2,
-                    borderRadius: '50%',
-                    left: 85,
-                    top: 180,
-                    boxShadow: 'sm',
-                  }}
-                  onClick={handleEditIconClick}
-                >
-                  <EditRoundedIcon />
-                </IconButton>
-              </Stack>
-              <Stack spacing={1} sx={{ flexGrow: 1 }}>
-                <FormLabel>Name</FormLabel>
-                <FormControl
-                  sx={{
-                    display: {
-                      sm: 'flex-column',
-                      md: 'flex-row',
-                    },
-                    gap: 2,
-                  }}
-                >
-                  <Input size="sm" placeholder="First name" />
-                  <Input size="sm" placeholder="Last name" />
-                </FormControl>
-              </Stack>
-            </Stack>
-          </Stack>
-          <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
-            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
-                Cancel
-              </Button>
-              <Button size="sm" variant="solid">
-                Save
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
-        <Card>
-          <Box sx={{ mb: 1 }}>
-            <Typography level="title-md">Bio</Typography>
-            <Typography level="body-sm">
-              Write a short introduction to be displayed on your profile
-            </Typography>
-          </Box>
-          <Divider />
-          <Stack spacing={2} sx={{ my: 1 }}>
-            <Textarea
-              size="sm"
-              minRows={4}
-              sx={{ mt: 1.5 }}
-              defaultValue="I'm a software developer based in Bangkok, Thailand. My goal is to solve UI problems with neat CSS without using too much JavaScript."
-            />
-            <FormHelperText sx={{ mt: 0.75, fontSize: 'xs' }}>
-              275 characters left
-            </FormHelperText>
-          </Stack>
-          <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
-            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
-                Cancel
-              </Button>
-              <Button size="sm" variant="solid">
-                Save
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
-      </Stack>
+    </Box>
     </Box>
   );
 }

@@ -6,6 +6,7 @@ import SignIn from './pages/SignIn';
 import './App.css';
 import Landing from './pages/Landing';
 import Profile from './pages/Profile';
+import ProfileEdit from './pages/ProfileEdit';
 const App = () => {
 
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path='/signup' element={<Signup/>} />
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/profile' element={<Profile/>} />
+        <Route path='/edit-profile' element={<ProfileEdit/>} />
       </Routes>
     </Router>
     </div>
