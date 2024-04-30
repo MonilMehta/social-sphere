@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verifyJWT } from "../middlewares/verifyJWT.middleware.js";
 import {
   getLikedPosts,
   toggleCommentLike,
@@ -7,6 +8,8 @@ import {
 } from "../controllers/like.controller.js";
 
 const router = Router();
+
+router.use(verifyJWT);
 
 router.route("/p/:postId").post(togglePostLike);
 router.route("/c/:commentId").post(toggleCommentLike);

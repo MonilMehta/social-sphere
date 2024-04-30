@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
+import { verifyJWT } from "../middlewares/verifyJWT.middleware.js";
 import {
   createPost,
   deletePost,
@@ -11,6 +12,8 @@ import {
 } from "../controllers/post.controller.js";
 
 const router = Router();
+
+router.use(verifyJWT);
 
 router
   .route("/")

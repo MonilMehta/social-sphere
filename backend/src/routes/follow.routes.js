@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verifyJWT } from "../middlewares/verifyJWT.middleware.js";
 import {
   getFollowers,
   getFollowings,
@@ -6,6 +7,8 @@ import {
 } from "../controllers/follow.controller.js";
 
 const router = Router();
+
+router.use(verifyJWT);
 
 router.route("/toggle/:userId").post(toggleFollow);
 router.route("/followers/:userId").get(getFollowers);
