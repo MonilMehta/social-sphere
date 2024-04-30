@@ -1,23 +1,17 @@
-const jwt=require('jsonwebtoken');
-require('dotenv').config();
+import jwt from "jsonwebtoken";
+import { User } from "../models/user.models.js";
 
-const verifyJWT=(req, res, next) =>{
-    const authHeader=req.headers['authorization'];
-    if(!authHeader){
-        return res.sendStatus(401);
-    }
-    console.log(authHeader);
-    const token=authHeader.split(' ')[1];
-    jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded)=>{
-            if(err){
-                return res.sendStatus(403);//invalid token
-            }
-            req.user=decoded.username;
-            next();
-        }
-    )
-}
-module.exports = verifyJWT;
+const verifyJWT = async (req, res, next) => {
+  const token = req.cookies?.accessToken || req.headers["authorization"]?.split(" ")[1];
+  if (!token) {
+    return res.sendStatus(401);
+  }
+  console.log(token);
+  const response = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const theUser = await User.findById(response._id).select(
+    "-password -refreshToken"
+  );
+  req.user = theUser;
+  next();
+};
+export { verifyJWT };
