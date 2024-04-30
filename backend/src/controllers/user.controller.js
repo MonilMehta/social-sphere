@@ -248,9 +248,91 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
-const getBookmarks = asyncHandler(async (req, res) => {});
+const getUserProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
 
-const getUserProfile = asyncHandler(async (req, res) => {});
+  if (!username || username.trim() === "") {
+    throw new ApiError(400, "Username is missing");
+  }
+
+  const profile = await User.aggregate([
+    {
+      $match: {
+        username: username,
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "following",
+        as: "followers",
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "follower",
+        as: "followings",
+      },
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "_id",
+        foreignField: "postedBy",
+        as: "posts",
+      },
+    },
+    {
+      $addFields: {
+        followersCount: {
+          $size: "$followers",
+        },
+        followingsCount: {
+          $size: "$followings",
+        },
+        posts: {
+          $first: "$posts",
+        },
+        postsCount: {
+          $size: "$posts",
+        },
+        isFollowing: {
+          $cond: {
+            if: { $in: [req.user?._id, "$followers.follower"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        username: 1,
+        bio: 1,
+        isFollowing: 1,
+        followersCount: 1,
+        followingsCount: 1,
+        profilepic: 1,
+        posts: 1,
+        postsCount: 1,
+      },
+    },
+  ]);
+
+  console.log(profile);
+  
+  if (!profile) {
+    throw new ApiError(404, "User does not exists");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, profile, "User profile fethed successfully"));
+});
 
 export {
   registerUser,
@@ -258,6 +340,5 @@ export {
   logoutUser,
   updateAccount,
   changePassword,
-  getBookmarks,
   getUserProfile,
 };
