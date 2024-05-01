@@ -1,9 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Link as Lk } from 'react-router-dom';
+import { Link as Lk, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faBell, faUser, faList } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token not found");
+    }
+    let res = await axios.get(
+      "https://social-sphere-xzkh.onrender.com/api/v1/users/me",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data);
+    navigate(`/profile/${res.data.data.username}`)
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,12 +52,12 @@ const Sidebar = () => {
           {!isCollapsed && <h5 className='ml-3 text-xl mb-4 mt-4'>Notification</h5>}
         </div>
       </Lk>
-      <Lk to='/profile' className='block'>
+      <div className='block' onClick={handleClick}>
         <div className='flex items-center hover:bg-slate-100 mb-4 mr-4 ml-4 rounded-full'>
           <FontAwesomeIcon icon={faUser} className='w-10 h-8 mb-4 mt-4 ml-8' />
           {!isCollapsed && <h5 className='ml-3 text-xl mb-4 mt-4'>Profile</h5>}
         </div>
-      </Lk>
+      </div>
       <Lk to='/more' className='block'>
         <div className='flex items-center hover:bg-slate-100 mb-4 mr-4 ml-4 rounded-full'>
           <FontAwesomeIcon icon={faList} className='w-10 h-8 mb-4 mt-4 ml-8' />
