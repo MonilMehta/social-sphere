@@ -15,8 +15,6 @@ import axios from 'axios';
 
 function SignIn() {
   const navigate = useNavigate();
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || '');
-  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || '');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,19 +37,16 @@ function SignIn() {
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 5000,
+          withCredentials: true
         }
       );
       console.log('User login successfully:', response.data);
       if (response.status === 200) {
-        // Set tokens in state and local storage
-        setAccessToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-
+        
         // Navigate to the Home page
-        navigate('/Home');
+        setTimeout(() => {
+          navigate('/Home');
+        }, 5000)
       } else {
         alert('An error occurred while logging in. Please try again later.');
       }
