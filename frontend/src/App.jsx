@@ -8,6 +8,7 @@ import './App.css';
 import Landing from './pages/Landing';
 import Profile from './pages/Profile';
 import ProfileEdit from './pages/ProfileEdit';
+import Comments from './pages/Comments';
 import Changepass from './pages/Changepass';
 const App = () => {
 
@@ -18,6 +19,7 @@ const App = () => {
         <Route path='/' element={<Landing/>} />
         <Route path='/Home' element={<Home/>} />
         <Route path='/signup' element={<Signup/>} />
+        <Route path="/comments/:postId" element={<Comments />} />
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/profile/:username' element={<Profile/>} />
         <Route path='/edit-profile' element={<ProfileEdit/>} />
