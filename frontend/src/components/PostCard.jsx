@@ -6,7 +6,7 @@ import axios from "axios";
 
 const PostCard = ({ post, updatePosts }) => {
   const history = useNavigate();
-  const { _id, mediaFile, caption, postedBy, numberOfLikes, numberOfComments } = post;
+  const { _id, mediaFile, caption, postedBy, numberOfLikes, numberOfComments, hasUserLikedPost } = post;
   const { username, name, profilepic } = postedBy;
 
   const postImg = mediaFile && mediaFile.length > 0 ? mediaFile[0] : null;
@@ -97,7 +97,8 @@ const PostCard = ({ post, updatePosts }) => {
         <img
           src={profilepic || defaultImage}
           alt="User avatar"
-          className="w-12 h-12 rounded-full"
+          className="w-12 h-12 rounded-full cursor-pointer"
+          onClick={() => history(`/profile/${username}`)}
         />
         <h3 className="ml-2 text-black">@{username || "Unknown"}</h3>
       </div>
@@ -120,7 +121,11 @@ const PostCard = ({ post, updatePosts }) => {
           onClick={handleLikeClick}
           style={{ cursor: "pointer" }}
         >
-          {numberOfLikes} <FaThumbsUp className="ml-2" size={24} />
+          {numberOfLikes} 
+          {hasUserLikedPost?
+            <FaThumbsUp className="ml-2 text-red-500" size={24} />:
+            <FaThumbsUp className="ml-2" size={24} />
+          }
         </div>
         <div
           className="icon-wrapper mr-6 flex flex-row"
