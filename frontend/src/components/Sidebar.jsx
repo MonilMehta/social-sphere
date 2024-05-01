@@ -49,7 +49,7 @@ const Sidebar = () => {
 //     </Lk>
 //   </div>
 <div className={`${isCollapsed ? 'w-32' : 'w-64'} border-r fixed transition-all ease-in-out duration-500 pt-8 h-full ml-0`}>
-      <Lk to='/' className='block'>
+      <Lk to='/Home' className='block'>
         <div className='flex items-center hover:bg-slate-100 mb-4 mr-4 ml-4 rounded-full'>
           <FontAwesomeIcon icon={faHouse} className='w-10 h-8 mb-4 mt-4 ml-8' />
           {!isCollapsed && <h5 className='ml-3 text-xl mb-4 mt-4'>Home</h5>}
