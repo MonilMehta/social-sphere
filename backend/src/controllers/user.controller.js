@@ -97,14 +97,14 @@ const loginUser = asyncHandler(async (req, res) => {
       },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: process.env.ACCESS_EXPIRY,
       }
     );
     refreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: process.env.REFRESH_EXPIRY,
       }
     );
     //saving refreshtoken with current user
@@ -360,14 +360,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: process.env.ACCESS_EXPIRY,
       }
     );
     const refreshToken = jwt.sign(
       { username: user.username },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: process.env.REFRESH_EXPIRY,
       }
     );
     //saving refreshtoken with current user
