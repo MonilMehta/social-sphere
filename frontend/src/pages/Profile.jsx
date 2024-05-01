@@ -8,9 +8,11 @@ import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Avatar from '@mui/joy/Avatar';
 import Button from '@mui/joy/Button';
-import { Link as Lk } from 'react-router-dom';
+import { Link as Lk, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import axios from 'axios';
 
 const posts = [
   { id: 1, imageUrl: 'https://via.placeholder.com/400', title: 'Post 1' },
@@ -26,6 +28,34 @@ const posts = [
 
 export default function ProfilePage({ user }) {
   const { profileImage, name, followersCount } = user || {};
+  const params = useParams();
+  const [theUser, setTheUser] = useState()
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          throw new Error('Access token not found');
+        }
+
+        const response = await axios.get(`https://social-sphere-xzkh.onrender.com/api/v1/users/profile/${params.username}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(response);
+
+        const fetchedProfile = response.data; 
+        setTheUser(fetchedProfile)
+        console.log(theUser);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []); 
 
   return (
     <Box sx={{ display: 'flex',flexDirection:'column' }}>
