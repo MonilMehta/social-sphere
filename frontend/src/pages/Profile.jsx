@@ -47,6 +47,7 @@ export default function ProfilePage() {
           }
         );
         setCurrentUser(res.data);
+        console.log(res.data)
         setRender(true);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -147,7 +148,7 @@ export default function ProfilePage() {
                         {theUser.data[0].isFollowing ? "Unfollow" : "Follow"}
                       </Button>
                     </Box>
-                    {theUser.data[0].username === currentUser.data.username ? (
+                    {theUser.data[0].username === currentUser.username ? (
                       <Lk to="/edit-profile" style={{ textDecoration: "none" }}>
                         <Button
                           variant="outlined"
