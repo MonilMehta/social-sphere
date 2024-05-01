@@ -8,23 +8,32 @@ const Posts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('https://social-sphere-xzkh.onrender.com/api/v1/posts/');
-        const fetchedPosts = response.data; // Assuming the response contains an array of posts
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          throw new Error('Access token not found');
+        }
+
+        const response = await axios.get('https://social-sphere-xzkh.onrender.com/api/v1/posts/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const fetchedPosts = response.data;
         setPosts(fetchedPosts);
-        
-        console.log(JSON.stringify(response.data));
+        console.log('Posts fetched successfully:', fetchedPosts)
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
     };
 
-    fetchPosts();
-  }, []); // Run once on component mount
-  
+    fetchPosts(); // Call the fetchPosts function when the component mounts
+  }, []); // Empty dependency array means this effect runs only once after mount
+
   return (
     <div className="flex flex-col items-start">
-      {posts.map(post => (
-        <PostCard key={post.id} post={post} /> // Pass each post as a prop to PostCard
+      {Array.isArray(posts) && posts.map(post => (
+        <PostCard key={post._id} post={post} /> // Assuming post has _id property
       ))}
     </div>
   );

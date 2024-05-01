@@ -40,13 +40,19 @@ function SignIn() {
           withCredentials: true
         }
       );
-      console.log('User login successfully:', response.data);
+
       if (response.status === 200) {
+        console.log('Successfully:', response.data.data.accessToken);
+        const { accessToken } = response.data.data.accessToken; // Extract accessToken from response.data
+
+        // Store the access token in both local storage and cookie
+        localStorage.setItem('accessToken', response.data.data.accessToken);
+        document.cookie = `accessToken=${response.data.data.accessToken};max-age=${7 * 24 * 60 * 60};path=/`;
+
+        console.log('User logged in successfully:', response.data);
         
-        // Navigate to the Home page
-        setTimeout(() => {
-          navigate('/Home');
-        }, 5000)
+        // Navigate to the Home page after successful login
+        navigate('/Home');
       } else {
         alert('An error occurred while logging in. Please try again later.');
       }
