@@ -3,23 +3,20 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function Signup() {
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-
+  const navigate = useNavigate();
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,16 +32,23 @@ export default function Signup() {
     }
 
     try {
-      const response = await axios.post('https://social-sphere-xzkh.onrender.com/api/v1/users/register', {
-        fullName,
-        username,
-        email,
-        password,
-      }, {
-        timeout: 5000 // Timeout in milliseconds (e.g., 5 seconds)
-      });
-      setRegistrationSuccess(true);
+      const response = await axios.post(
+        'https://social-sphere-xzkh.onrender.com/api/v1/users/register',
+        {
+          name: fullName,
+          username: username,
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 5000,
+        }
+      );
       console.log('User registered successfully:', response.data);
+      navigate('/signin');
     } catch (error) {
       console.error('Error registering user:', error);
       alert('An error occurred while registering. Please try again later.');
@@ -114,23 +118,10 @@ export default function Signup() {
                     autoComplete="new-password"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                    label="I want to receive inspiration, marketing promotions and updates via email."
-                  />
-                </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={buttonDisabled}>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign Up
               </Button>
-              {registrationSuccess && (
-                <Grid container justifyContent="flex-end">
-                  <Grid item>
-                    <RouterLink to="/signin" style={{ textDecoration: 'none', color: 'black' }}> Already have an account? Sign in</RouterLink>
-                  </Grid>
-                </Grid>
-              )}
             </Box>
           </Box>
         </Container>
