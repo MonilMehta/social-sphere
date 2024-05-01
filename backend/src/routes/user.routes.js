@@ -3,6 +3,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/verifyJWT.middleware.js";
 import {
   changePassword,
+  getRandomUsers,
   getSelf,
   getUserProfile,
   loginUser,
@@ -22,5 +23,6 @@ router.route("/change-pass").post(verifyJWT, changePassword);
 router.route("/profile/:username").get(verifyJWT, getUserProfile);
 router.route("/refresh-token").post(verifyJWT, refreshAccessToken);
 router.route("/me").get(verifyJWT, getSelf);
+router.route("/random-users").get(verifyJWT, getRandomUsers);
 
 export default router;

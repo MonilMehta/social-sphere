@@ -4,8 +4,28 @@ import Svg2 from "../assets/navbar-svg-2.jsx";
 import Svg3 from "../assets/navbar-svg-3.jsx";
 import Svg4 from "../assets/navbar-svg-4.jsx";
 import Svg5 from "../assets/navbar-svg-5.jsx";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token not found");
+    }
+    let res = await axios.get(
+      "https://social-sphere-xzkh.onrender.com/api/v1/users/me",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data);
+    navigate(`/profile/${res.data.data.username}`)
+  };
   return (
     // <nav className="navbar">
     //   <div className="navbar-logo">
@@ -24,7 +44,9 @@ const Navbar = () => {
         <a className="_o6689fn" href="/">
           <div className="flex justify-center items-center">
             <Svg1 />
-            <span className="ml-2 text-2xl font-bold font-mono">Social Sphere</span>
+            <span className="ml-2 text-2xl font-bold font-mono">
+              Social Sphere
+            </span>
           </div>
           <div className="block md:hidden">
             <Svg2 />
@@ -68,18 +90,13 @@ const Navbar = () => {
               <button
                 type="button"
                 className="inline-flex items-center relative px-2 border rounded-full hover:shadow-lg"
+                onClick={handleClick}
               >
-                <div
-                  className="pl-1"
-                  // onClick={openSideBar}
-                >
+                <div className="pl-1">
                   <Svg4 />
                 </div>
-
                 <div className="block flex-grow-0 flex-shrink-0 h-10 w-12 pl-5">
-                  <a href="/profile">
-                    <Svg5 />
-                  </a>
+                  <Svg5 />
                 </div>
               </button>
             </div>

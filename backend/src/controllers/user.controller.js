@@ -393,6 +393,21 @@ const getSelf = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
+const getRandomUsers = asyncHandler(async (req, res) => {
+  const users = await User.aggregate([
+    {
+      $match: {
+        username: { $ne: req.user.username },
+      },
+    },
+    { $sample: { size: 4 } },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, users, "Random users fetched successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -401,5 +416,6 @@ export {
   changePassword,
   getUserProfile,
   refreshAccessToken,
-  getSelf
+  getSelf,
+  getRandomUsers,
 };

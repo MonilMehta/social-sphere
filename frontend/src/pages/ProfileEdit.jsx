@@ -23,11 +23,10 @@ import { Link as Lk } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Profile() {
-  const [selectedImage, setSelectedImage] = React.useState('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286');
   const [email, setEmail] = React.useState('');
   const [bio, setBio] = React.useState('');
   const [fullName, setFullName] = React.useState('');
-  const [userName, setUserName] = React.useState('');
+  const [selectedImage, setSelectedImage] = React.useState(null);
 
   const fileInputRef = React.useRef(null);
 
@@ -37,13 +36,7 @@ export default function Profile() {
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setSelectedImage(reader.result);
-    };
-
-    reader.readAsDataURL(file);
+    setSelectedImage(file);
   };
 
   const handleEmailChange = (event) => {
@@ -54,23 +47,19 @@ export default function Profile() {
     setFullName(event.target.value);
   };
 
-  const handleUserNameChange = (event) => {
-    setUserName(event.target.value);
-  };
-
   const handleBioChange = (event) => {
     setBio(event.target.value);
   };
 
   const handleSaveChanges = async () => {
     try {
-      const data = {
-        email: email,
-        name: fullName,
-        
-        bio: bio,
-        profilepic: selectedImage,
-      };
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('name', fullName);
+      formData.append('bio', bio);
+      if (selectedImage) {
+        formData.append('profilepic', selectedImage);
+      }
 
       const accessToken = localStorage.getItem('accessToken');
       if (!accessToken) {
@@ -79,11 +68,11 @@ export default function Profile() {
 
       const response = await axios.patch(
         'https://social-sphere-xzkh.onrender.com/api/v1/users/update-account',
-        data,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
           withCredentials: true,
         }
@@ -161,7 +150,7 @@ export default function Profile() {
                 sx={{ flex: 1, minWidth: 120, borderRadius: '100%' }}
               >
                 <img
-                  src={selectedImage}
+                  src={selectedImage ? URL.createObjectURL(selectedImage) : 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI='}
                   loading="lazy"
                   alt=""
                 />
@@ -198,7 +187,6 @@ export default function Profile() {
                   sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                 >
                   <Input size="sm" placeholder="Full name" name="fullName" value={fullName} onChange={handleFullNameChange} />
-                  <Input size="sm" placeholder="Username" name="userName" value={userName} onChange={handleUserNameChange} />
                 </FormControl>
               </Stack>
               <Stack spacing={1}>

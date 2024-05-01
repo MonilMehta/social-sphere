@@ -194,6 +194,7 @@ export default function ProfilePage() {
                         color="text.secondary"
                         sx={{ fontSize: "1.5rem", mr: 2 }}
                         onClick={handleFollowers}
+                        className="hover:cursor-pointer"
                       >
                         {theUser.data[0].followersCount} followers
                       </Typography>
@@ -202,6 +203,7 @@ export default function ProfilePage() {
                         color="text.primary"
                         sx={{ fontSize: "1.5rem", mr: 2 }}
                         onClick={handleFollowings}
+                        className="hover:cursor-pointer"
                       >
                         {theUser.data[0].followingsCount} following
                       </Typography>
@@ -299,14 +301,15 @@ export default function ProfilePage() {
           </Typography>
           <Typography id="modal-description" sx={{ mt: 2 }}>
             {modalData &&
-              modalData.data.map((item, index) => (
-                <div key={index} className="flex w-full items-center">
+              modalData.data.map((item) => (
+                <div key={item._id} className="flex w-full items-center">
                   <div
-                    className="w-16 h-16 mr-2"
+                    className="w-16 h-16 mr-2 border-b border-red-400 rounded-full"
                     onClick={() =>
                       navigate(
                         `/profile/${
-                          item.follower.username || item.following.username
+                          item.follower.username || item.following.username || 
+                          item.follower[0].username || item.following[0].username
                         }`
                       )
                     }
@@ -315,16 +318,18 @@ export default function ProfilePage() {
                       src={
                         item.follower.profilepic ||
                         item.following.profilepic ||
-                        ""
+                        item.follower[0].profilepic ||
+                        item.following[0].profilepic ||
+                        "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
                       }
                       alt=""
                       className="rounded-full"
                     />
                   </div>
                   <div>
-                    <div>{item.follower.name || item.following.name}</div>
+                    <div>{item.follower.name || item.following.name || item.follower[0].name || item.following[0].name}</div>
                     <div>
-                      @{item.follower.username || item.following.username}
+                      @{item.follower.username || item.following.username || item.follower[0].username || item.following[0].username}
                     </div>
                   </div>
                 </div>
