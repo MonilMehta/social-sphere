@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,18 +10,55 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function SignIn() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || '');
+  const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken') || '');
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get('email');
     const password = data.get('password');
-    console.log({
-      email,
-      password,
-    });
+    if (!email || !password) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'https://social-sphere-xzkh.onrender.com/api/v1/users/login',
+        {
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 5000,
+        }
+      );
+      console.log('User login successfully:', response.data);
+      if (response.status === 200) {
+        // Set tokens in state and local storage
+        setAccessToken(response.data.accessToken);
+        setRefreshToken(response.data.refreshToken);
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+
+        // Navigate to the Home page
+        navigate('/Home');
+      } else {
+        alert('An error occurred while logging in. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      alert('An error occurred while logging in. Please try again later.');
+    }
   };
 
   return (
