@@ -26,6 +26,7 @@
     "axios": "^1.6.8",
     "flowbite": "^2.3.0",
     "framer-motion": "^11.1.7",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "mui": "^0.0.1",
     "react": "^18.2.0",
