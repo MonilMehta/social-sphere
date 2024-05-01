@@ -19,9 +19,9 @@ const Posts = () => {
           },
         });
 
-        const fetchedPosts = response.data;
+        const fetchedPosts = response.data.data; // Access the 'data' array from the response
         setPosts(fetchedPosts);
-        console.log('Posts fetched successfully:', fetchedPosts)
+        console.log('Posts fetched successfully:', fetchedPosts);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -32,9 +32,10 @@ const Posts = () => {
 
   return (
     <div className="flex flex-col items-start">
-      {Array.isArray(posts) && posts.map(post => (
-        <PostCard key={post._id} post={post} /> // Assuming post has _id property
-      ))}
+      {Array.isArray(posts) &&
+        posts.map(post => (
+          <PostCard key={post._id} post={post} />
+        ))}
     </div>
   );
 };
