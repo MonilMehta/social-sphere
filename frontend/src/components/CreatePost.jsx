@@ -1,17 +1,16 @@
-
 import React, { useState } from "react";
+import axios from "axios";
 
-const CreatePost = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const CreatePost = ({ updatePosts }) => {
   const [caption, setCaption] = useState("");
   const [files, setFiles] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => {
     setIsOpen(false);
-    // Reset caption and files when closing modal
-    setCaption("");
-    setFiles([]);
+    setCaption(""); // Reset caption state when closing modal
+    setFiles([]); // Reset files state when closing modal
   };
 
   const handleCaptionChange = (e) => setCaption(e.target.value);
@@ -21,24 +20,52 @@ const CreatePost = () => {
     setFiles([...files, ...selectedFiles]);
   };
 
-  const handlePostSubmit = (e) => {
+  const handlePostSubmit = async (e) => {
     e.preventDefault();
-    // Handle post submission with caption and files
-    console.log("Caption:", caption);
-    console.log("Files:", files);
-    // Reset caption and files after submission
-    setCaption("");
-    setFiles([]);
-    closeModal();
+
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const formData = new FormData();
+      formData.append("caption", caption);
+      files.forEach((file) => formData.append("mediaFile", file));
+
+      const response = await axios.post(
+        "https://social-sphere-xzkh.onrender.com/api/v1/posts/",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Post created successfully:", response.data);
+      updatePosts(); // Trigger posts update after successful creation
+      closeModal(); // Close the modal after successful post creation
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   return (
     <>
-          <button
-          className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={openModal}
-          style={{ backgroundColor: 'black', color: 'white', padding: '15px 30px', cursor: 'pointer', textDecoration:'none'}}
-        >
+      <button
+        className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={openModal}
+        style={{
+          backgroundColor: "black",
+          color: "white",
+          padding: "15px 30px",
+          cursor: "pointer",
+          textDecoration: "none",
+          marginLeft: "200px",
+        }}
+      >
         Create Post
       </button>
       {isOpen && (
