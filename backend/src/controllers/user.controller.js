@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { email, username, name, bio, password } = req.body;
+  const { email, username, name, password } = req.body;
 
   if (
     !email ||
@@ -18,8 +18,6 @@ const registerUser = asyncHandler(async (req, res) => {
     username.trim() === "" ||
     !name ||
     name.trim() === "" ||
-    !bio ||
-    bio.trim() === "" ||
     !password ||
     password.trim() === ""
   ) {
@@ -36,24 +34,22 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  console.log(req.file);
-  const profilePicLocalPath = await req.file?.path;
-  if (!profilePicLocalPath) {
-    throw new ApiError(400, "Profile photo is required");
-  }
+  // console.log(req.file);
+  // const profilePicLocalPath = await req.file?.path;
+  // if (!profilePicLocalPath) {
+  //   throw new ApiError(400, "Profile photo is required");
+  // }
 
-  let profilepic = await uploadFileOnCloudinary(profilePicLocalPath);
-  if (!profilepic) {
-    throw new ApiError(400, "Profile picture is required");
-  }
+  // let profilepic = await uploadFileOnCloudinary(profilePicLocalPath);
+  // if (!profilepic) {
+  //   throw new ApiError(400, "Profile picture is required");
+  // }
 
   const user = await User.create({
     email,
     username: username.toLowerCase(),
     name,
-    bio,
     password,
-    profilepic: profilepic.url,
   });
 
   const createdUser = await User.findById(user._id).select(
