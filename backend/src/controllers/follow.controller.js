@@ -74,9 +74,7 @@ const getFollowers = asyncHandler(async (req, res) => {
     },
     {
       $addFields: {
-        follower: {
-          $first: "$follower",
-        },
+        follower: "$follower",
       },
     },
   ]);

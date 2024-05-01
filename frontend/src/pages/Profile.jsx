@@ -7,8 +7,9 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Avatar from "@mui/joy/Avatar";
 import Button from "@mui/joy/Button";
-import { Link as Lk, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import Modal from "@mui/material/Modal";
+import { Link as Lk, useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
@@ -18,57 +19,120 @@ export default function ProfilePage() {
   const [theUser, setTheUser] = useState(null);
   const [render, setRender] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [data, setData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalFor, setModalFor] = useState("Followers");
+  const [modalData, setModalData] = useState();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) {
-          throw new Error("Access token not found");
-        }
+  const navigate = useNavigate();
 
-        const response = await axios.get(
-          `https://social-sphere-xzkh.onrender.com/api/v1/users/profile/${params.username}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        console.log("Response", response);
-        const fetchedProfile = response.data;
-        setTheUser(fetchedProfile);
-        let res = await axios.get(
-          "https://social-sphere-xzkh.onrender.com/api/v1/users/me",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        setCurrentUser(res.data);
-        console.log(res.data)
-        setRender(true);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-    fetchProfile();
-  }, []);
-
-  const handleFollow = async () => {
+  const fetchProfile = async () => {
     try {
-      // Implement follow logic here
+      setRender(false);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.get(
+        `https://social-sphere-xzkh.onrender.com/api/v1/users/profile/${params.username}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("Response", response);
+      const fetchedProfile = response.data;
+      setTheUser(fetchedProfile);
+      let res = await axios.get(
+        "https://social-sphere-xzkh.onrender.com/api/v1/users/me",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setCurrentUser(res.data);
+      console.log(res.data);
+      setRender(true);
     } catch (error) {
-      console.error("Error following user:", error);
+      console.error("Error fetching profile:", error);
     }
   };
 
-  const handleUnfollow = async () => {
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const handleFollowers = async () => {
     try {
-      // Implement unfollow logic here
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.get(
+        `https://social-sphere-xzkh.onrender.com/api/v1/follows/followers/${theUser.data[0]._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setModalFor("Followers");
+      setModalData(response.data);
+      setIsOpen(true);
     } catch (error) {
-      console.error("Error unfollowing user:", error);
+      console.error("Error getting followers data:", error);
+    }
+  };
+
+  const handleFollowings = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.get(
+        `https://social-sphere-xzkh.onrender.com/api/v1/follows/followings/${theUser.data[0]._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setModalFor("Followings");
+      setModalData(response.data);
+      setIsOpen(true);
+    } catch (error) {
+      console.error("Error getting followings data:", error);
+    }
+  };
+
+  const handleFollow = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.post(
+        `https://social-sphere-xzkh.onrender.com/api/v1/follows/toggle/${theUser.data[0]._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response);
+      fetchProfile();
+    } catch (error) {
+      console.error("Error following / unfollowing user:", error);
     }
   };
 
@@ -129,6 +193,7 @@ export default function ProfilePage() {
                         variant="body1"
                         color="text.secondary"
                         sx={{ fontSize: "1.5rem", mr: 2 }}
+                        onClick={handleFollowers}
                       >
                         {theUser.data[0].followersCount} followers
                       </Typography>
@@ -136,19 +201,25 @@ export default function ProfilePage() {
                         variant="body1"
                         color="text.primary"
                         sx={{ fontSize: "1.5rem", mr: 2 }}
+                        onClick={handleFollowings}
                       >
                         {theUser.data[0].followingsCount} following
                       </Typography>
                       {/** Follow/Unfollow buttons */}
-                      <Button
-                        variant="outlined"
-                        onClick={handleUnfollow}
-                        sx={{ fontSize: "1.5rem" }}
-                      >
-                        {theUser.data[0].isFollowing ? "Unfollow" : "Follow"}
-                      </Button>
+                      {theUser.data[0].username ===
+                      currentUser.data.username ? (
+                        <></>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          onClick={handleFollow}
+                          sx={{ fontSize: "1.5rem" }}
+                        >
+                          {theUser.data[0].isFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                      )}
                     </Box>
-                    {theUser.data[0].username === currentUser.username ? (
+                    {theUser.data[0].username === currentUser.data.username ? (
                       <Lk to="/edit-profile" style={{ textDecoration: "none" }}>
                         <Button
                           variant="outlined"
@@ -206,6 +277,66 @@ export default function ProfilePage() {
           )}
         </Box>
       </Box>
+      <Modal
+        open={isOpen}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            boxShadow: 24,
+            p: 4,
+            width: 400,
+          }}
+        >
+          <Typography variant="h6" component="h2" id="modal-title">
+            {modalFor}
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            {modalData &&
+              modalData.data.map((item, index) => (
+                <div key={index} className="flex w-full items-center">
+                  <div
+                    className="w-16 h-16 mr-2"
+                    onClick={() =>
+                      navigate(
+                        `/profile/${
+                          item.follower.username || item.following.username
+                        }`
+                      )
+                    }
+                  >
+                    <img
+                      src={
+                        item.follower.profilepic ||
+                        item.following.profilepic ||
+                        ""
+                      }
+                      alt=""
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div>
+                    <div>{item.follower.name || item.following.name}</div>
+                    <div>
+                      @{item.follower.username || item.following.username}
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </Typography>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={() => setIsOpen(false)} variant="outlined">
+              Close
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 }
