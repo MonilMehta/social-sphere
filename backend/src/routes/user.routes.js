@@ -21,6 +21,6 @@ router.route("/update-account").patch(verifyJWT, upload.single("profilepic"), up
 router.route("/change-pass").post(verifyJWT, changePassword);
 router.route("/profile/:username").get(verifyJWT, getUserProfile);
 router.route("/refresh-token").post(verifyJWT, refreshAccessToken);
-router.route("/me").get(getSelf);
+router.route("/me").get(verifyJWT, getSelf);
 
 export default router;
