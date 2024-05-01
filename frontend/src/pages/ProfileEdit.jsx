@@ -20,12 +20,14 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { Link as Lk } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Profile() {
   const [selectedImage, setSelectedImage] = React.useState('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286');
   const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
   const [bio, setBio] = React.useState('');
+  const [fullName, setFullName] = React.useState('');
+  const [userName, setUserName] = React.useState('');
 
   const fileInputRef = React.useRef(null);
 
@@ -48,8 +50,49 @@ export default function Profile() {
     setEmail(event.target.value);
   };
 
+  const handleFullNameChange = (event) => {
+    setFullName(event.target.value);
+  };
+
+  const handleUserNameChange = (event) => {
+    setUserName(event.target.value);
+  };
+
   const handleBioChange = (event) => {
     setBio(event.target.value);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const data = {
+        email: email,
+        name: fullName,
+        
+        bio: bio,
+        profilepic: selectedImage,
+      };
+
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error('Access token not found');
+      }
+
+      const response = await axios.patch(
+        'https://social-sphere-xzkh.onrender.com/api/v1/users/update-account',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log('Profile updated successfully:', response.data);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
 
   return (
@@ -154,13 +197,13 @@ export default function Profile() {
                 <FormControl
                   sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                 >
-                  <Input size="sm" placeholder="First name" />
-                  <Input size="sm" placeholder="Last name" sx={{ flexGrow: 1 }} />
+                  <Input size="sm" placeholder="Full name" name="fullName" value={fullName} onChange={handleFullNameChange} />
+                  <Input size="sm" placeholder="Username" name="userName" value={userName} onChange={handleUserNameChange} />
                 </FormControl>
               </Stack>
               <Stack spacing={1}>
                 <FormLabel>Email</FormLabel>
-                <Input size="sm" type="email" placeholder="Email" value={email} onChange={handleEmailChange} />
+                <Input size="sm" type="email" placeholder="Email" name="email" value={email} onChange={handleEmailChange} />
               </Stack>
               <Button size="sm" variant="outlined" color="primary">
                 <Lk to='/change-password' style={{textDecoration:'none',color:'black'}}>Change Password</Lk>
@@ -183,6 +226,7 @@ export default function Profile() {
                 size="sm"
                 minRows={4}
                 sx={{ mt: 1.5 }}
+                name="bio"
                 value={bio}
                 onChange={handleBioChange}
               />
@@ -196,8 +240,8 @@ export default function Profile() {
               <Button size="sm" variant="outlined" color="neutral">
                 Cancel
               </Button>
-              <Button size="sm" variant="solid">
-                Save
+              <Button size="sm" variant="solid" onClick={handleSaveChanges}>
+                Save Changes
               </Button>
             </CardActions>
           </CardOverflow>
