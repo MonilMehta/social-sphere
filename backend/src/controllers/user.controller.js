@@ -289,7 +289,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         followingsCount: {
           $size: "$followings",
         },
-        posts:"$posts",
+        posts: "$posts",
         postsCount: {
           $size: "$posts",
         },
@@ -387,6 +387,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const getSelf = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -395,4 +401,5 @@ export {
   changePassword,
   getUserProfile,
   refreshAccessToken,
+  getSelf
 };
