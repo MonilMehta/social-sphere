@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,47 +10,24 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as Lk } from 'react-router-dom';
-function SignIn() {
-  const [validationErrors, setValidationErrors] = useState({});
+import { Link as RouterLink } from 'react-router-dom';
 
+function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const email = data.get('email');
     const password = data.get('password');
-
-    const errors = {};
-
-    if (!emailRegex.test(email)) {
-      errors.email = 'Invalid email address. It must contain an @ sign.';
-    }
-
-    if (!password) {
-      errors.password = 'Password is required.';
-    }
-
-    setValidationErrors(errors);
-
-    if (Object.keys(errors).length === 0) {
-      console.log({
-        email,
-        password,
-      });
-    }
+    console.log({
+      email,
+      password,
+    });
   };
 
-  const theme = createTheme();
-
   return (
-    <div style={{background:'white',color:'black'}}>
-      <ThemeProvider theme={theme}>
+    <div style={{ background: 'white', color: 'black' }}>
+      <CssBaseline />
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -75,8 +52,6 @@ function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
-              error={!!validationErrors.email}
-              helperText={validationErrors.email}
             />
             <TextField
               margin="normal"
@@ -87,8 +62,6 @@ function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              error={!!validationErrors.password}
-              helperText={validationErrors.password}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -100,19 +73,17 @@ function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-             <Lk to='/Home' style={{textDecoration:'none',color:'black'}}>Sign In</Lk> 
+              Sign In
             </Button>
-            <Grid container>
+            <Grid container justifyContent="flex-end">
               <Grid item>
-                <Lk to="/signup" style={{textDecoration:'none',color:'black'}}>Don't have an account? Sign Up</Lk>
+                <RouterLink to="/signup" style={{ textDecoration: 'none', color: 'black' }}>Don't have an account? Sign Up</RouterLink>
               </Grid>
             </Grid>
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
     </div>
-    
   );
 }
 

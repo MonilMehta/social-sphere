@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,12 +11,16 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as Lk } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
 
 const defaultTheme = createTheme();
 
 export default function Signup() {
-  const handleSubmit = (event) => {
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const fullName = data.get('fullName');
@@ -24,12 +28,27 @@ export default function Signup() {
     const email = data.get('email');
     const password = data.get('password');
 
-    console.log({
-      fullName,
-      username,
-      email,
-      password,
-    });
+    // Basic validation
+    if (!fullName || !username || !email || !password) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('https://social-sphere-xzkh.onrender.com/api/v1/users/register', {
+        fullName,
+        username,
+        email,
+        password,
+      }, {
+        timeout: 5000 // Timeout in milliseconds (e.g., 5 seconds)
+      });
+      setRegistrationSuccess(true);
+      console.log('User registered successfully:', response.data);
+    } catch (error) {
+      console.error('Error registering user:', error);
+      alert('An error occurred while registering. Please try again later.');
+    }
   };
 
   return (
@@ -102,14 +121,16 @@ export default function Signup() {
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                <Lk to="/signin" style={{ textDecoration: 'none', color: 'black' }}>Sign Up</Lk>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={buttonDisabled}>
+                Sign Up
               </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Lk to="/signin" style={{ textDecoration: 'none', color: 'black' }}> Already have an account? Sign in</Lk>
+              {registrationSuccess && (
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <RouterLink to="/signin" style={{ textDecoration: 'none', color: 'black' }}> Already have an account? Sign in</RouterLink>
+                  </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Box>
           </Box>
         </Container>
