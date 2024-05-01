@@ -7,7 +7,7 @@ const verifyJWT = async (req, res, next) => {
   if (!token) {
     return res.sendStatus(401);
   }
-  // console.log(token);
+  console.log(token);
   const response = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   const theUser = await User.findById(response._id).select(
     "-password -refreshToken"
