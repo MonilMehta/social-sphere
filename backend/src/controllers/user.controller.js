@@ -289,9 +289,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         followingsCount: {
           $size: "$followings",
         },
-        posts: {
-          $first: "$posts",
-        },
+        posts,
         postsCount: {
           $size: "$posts",
         },
