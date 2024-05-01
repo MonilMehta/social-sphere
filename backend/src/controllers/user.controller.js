@@ -400,12 +400,42 @@ const getRandomUsers = asyncHandler(async (req, res) => {
         username: { $ne: req.user.username },
       },
     },
+    {
+      $lookup: {
+        from: "follows",
+        let: { userId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$follower", req.user._id] },
+                  { $eq: ["$following", "$$userId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "followedUsers",
+      },
+    },
+    {
+      $match: {
+        followedUsers: { $size: 0 },
+      },
+    },
     { $sample: { size: 4 } },
   ]);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, users, "Random users fetched successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        users,
+        "Random users not followed fetched successfully"
+      )
+    );
 });
 
 export {
