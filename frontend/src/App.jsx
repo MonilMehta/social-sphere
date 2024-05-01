@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProvider } from './context/userContext';
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
@@ -12,7 +12,7 @@ import Changepass from './pages/Changepass';
 const App = () => {
 
   return (
-    <UserProvider>
+    <div>
     <Router>
       <Routes>
         <Route path='/' element={<Landing/>} />
@@ -24,7 +24,7 @@ const App = () => {
         <Route path='/change-password' element={<Changepass/>} />
       </Routes>
     </Router>
-    </UserProvider>
+    </div>
   );
 };
 
