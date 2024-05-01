@@ -324,7 +324,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
   ]);
 
   console.log(profile);
-  
+
   if (!profile) {
     throw new ApiError(404, "User does not exists");
   }
@@ -334,6 +334,65 @@ const getUserProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, profile, "User profile fethed successfully"));
 });
 
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.user.refreshToken;
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const user = await User.findOne({ username: decodedToken.username });
+    if (!user) {
+      throw new ApiError(401, "Invalid Refresh Token");
+    }
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+    const accessToken = jwt.sign(
+      {
+        username: user.username,
+        email: user.email,
+        _id: user._id,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+    const refreshToken = jwt.sign(
+      { username: user.username },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+    //saving refreshtoken with current user
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken },
+          "Access Token refreshed successfully"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -341,4 +400,5 @@ export {
   updateAccount,
   changePassword,
   getUserProfile,
+  refreshAccessToken,
 };

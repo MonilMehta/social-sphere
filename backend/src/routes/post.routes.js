@@ -6,7 +6,6 @@ import {
   deletePost,
   getAllPosts,
   getPostById,
-  togglePostToBookmark,
   togglePublicStatus,
   updatePost,
 } from "../controllers/post.controller.js";
@@ -23,7 +22,5 @@ router
 router.route("/:postId").get(getPostById).patch(updatePost).delete(deletePost);
 
 router.route("/toggle/:postId").patch(togglePublicStatus);
-
-router.route("/bookmark/:postId").patch(togglePostToBookmark)
 
 export default router;

@@ -6,6 +6,7 @@ import {
   getUserProfile,
   loginUser,
   logoutUser,
+  refreshAccessToken,
   registerUser,
   updateAccount,
 } from "../controllers/user.controller.js";
@@ -18,5 +19,6 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/update-account").patch(verifyJWT, upload.single("profilepic"), updateAccount);
 router.route("/change-pass").post(verifyJWT, changePassword);
 router.route("/profile/:username").get(verifyJWT, getUserProfile);
+router.route("/refresh-token").post(verifyJWT, refreshAccessToken);
 
 export default router;

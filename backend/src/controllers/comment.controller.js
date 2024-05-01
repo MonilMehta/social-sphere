@@ -45,9 +45,9 @@ const getComments = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Invalid Post Id");
   }
 
-  const post = await Post.findById(postId)
-  if(!post){
-    throw new ApiError(404, "Post not found")
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new ApiError(404, "Post not found");
   }
 
   const comments = await Comment.aggregate([

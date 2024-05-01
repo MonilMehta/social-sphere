@@ -123,15 +123,6 @@ const getAllPosts = asyncHandler(async (req, res) => {
             $size: "$CommentsOfPost",
           },
         },
-        isBookMarked: {
-          $cond: {
-            if: {
-              $in: ["$_id", req?.user?.bookmarks],
-            },
-            then: true,
-            else: false,
-          },
-        },
       },
     },
     {
@@ -262,15 +253,6 @@ const getPostById = asyncHandler(async (req, res) => {
             $size: "$CommentsOfPost",
           },
         },
-        isBookMarked: {
-          $cond: {
-            if: {
-              $in: ["$_id", req?.user?.bookmarks],
-            },
-            then: true,
-            else: false,
-          },
-        },
       },
     },
   ]);
@@ -301,7 +283,7 @@ const updatePost = asyncHandler(async (req, res) => {
 
   const post = await Post.findById(postId);
   if (!post) {
-    throw new ApiError(404, "Video does not exist");
+    throw new ApiError(404, "Post does not exist");
   }
   if (req.user?._id?.toString() !== post.postedBy.toString()) {
     throw new ApiError(403, "Unauthorized request");
@@ -415,48 +397,6 @@ const togglePublicStatus = asyncHandler(async (req, res) => {
     );
 });
 
-const togglePostToBookmark = asyncHandler(async (req, res) => {
-  const { postId } = req.params;
-
-  if (!postId || postId.trim() === "") {
-    throw new ApiError(400, "Post Id cannot be empty");
-  }
-  if (!mongoose.isValidObjectId(postId)) {
-    throw new ApiError(404, "Post Id is not valid");
-  }
-
-  const post = await Post.findById(postId);
-  if (!post) {
-    throw new ApiError(404, "Post does not exist");
-  }
-
-  const user = req.user;
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  const isPostAlreadyBookmarked = user.bookmarks?.find((post) =>
-    post._id.equals(postId)
-  );
-  if (!isPostAlreadyBookmarked) {
-    user.bookmarks.push(postId);
-  } else {
-    const index = user.bookmarks.findIndex((post) => post._id.equals(postId));
-    if (index !== -1) {
-      user.bookmarks.splice(index, 1);
-    }
-  }
-
-  const saved = await user.save();
-  if (!saved) {
-    throw new ApiError(500, "Failed to add post to bookmark");
-  }
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, saved, "Bookmark toggled successfully"));
-});
-
 export {
   createPost,
   getAllPosts,
@@ -464,5 +404,4 @@ export {
   updatePost,
   deletePost,
   togglePublicStatus,
-  togglePostToBookmark,
 };
