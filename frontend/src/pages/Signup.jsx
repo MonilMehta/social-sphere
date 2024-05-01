@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,175 +13,107 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as Lk } from 'react-router-dom';
 
-
 const defaultTheme = createTheme();
 
 export default function Signup() {
-  const [validationErrors, setValidationErrors] = useState({});
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    const nameRegex = /^[A-Za-z]+$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d+$/;
-    const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[!@#$%^&*]).{8,}$/;
-
-    const firstName = data.get('firstName');
-    const lastName = data.get('lastName');
+    const fullName = data.get('fullName');
+    const username = data.get('username');
     const email = data.get('email');
-    const phoneNumber = data.get('phoneNumber');
     const password = data.get('password');
 
-    const errors = {};
-
-    if (!nameRegex.test(firstName)) {
-      errors.firstName = 'Invalid first name. Only letters are allowed.';
-    }
-
-    if (!nameRegex.test(lastName)) {
-      errors.lastName = 'Invalid last name. Only letters are allowed.';
-    }
-
-    if (!emailRegex.test(email)) {
-      errors.email = 'Invalid email address. It must contain an @ sign.';
-    }
-
-    if (!phoneRegex.test(phoneNumber)) {
-      errors.phoneNumber = 'Invalid phone number. It must contain only numbers.';
-    }
-
-    if (!passwordRegex.test(password)) {
-      errors.password =
-        'Invalid password. It must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.';
-    }
-
-    setValidationErrors(errors);
-
-    if (Object.keys(errors).length === 0) {
-      console.log({
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        password,
-      });
-    }
+    console.log({
+      fullName,
+      username,
+      email,
+      password,
+    });
   };
 
   return (
-    <div style={{background:'white',color:'black'}}>
+    <div style={{ background: 'white', color: 'black' }}>
       <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                  error={!!validationErrors.firstName}
-                  helperText={validationErrors.firstName}
-                />
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign up
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    autoComplete="name"
+                    name="fullName"
+                    required
+                    fullWidth
+                    id="fullName"
+                    label="Full Name"
+                    autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={<Checkbox value="allowExtraEmails" color="primary" />}
+                    label="I want to receive inspiration, marketing promotions and updates via email."
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  error={!!validationErrors.lastName}
-                  helperText={validationErrors.lastName}
-                />
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                <Lk to="/signin" style={{ textDecoration: 'none', color: 'black' }}>Sign Up</Lk>
+              </Button>
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Lk to="/signin" style={{ textDecoration: 'none', color: 'black' }}> Already have an account? Sign in</Lk>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  error={!!validationErrors.email}
-                  helperText={validationErrors.email}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="phoneNumber"
-                  label="Phone Number"
-                  type="tel"
-                  error={!!validationErrors.phoneNumber}
-                  helperText={validationErrors.phoneNumber}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  error={!!validationErrors.password}
-                  helperText={validationErrors.password}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
-            </Grid>
-            {Object.keys(validationErrors).length > 0 && (
-              <Typography variant="body2" color="error" align="center" sx={{ mt: 2 }}>
-                Please fix the errors before submitting.
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-            <Lk to='/signin' style={{textDecoration:'none',color:'black'}}>Sign Up</Lk> 
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                   <Lk to="/signin" style={{textDecoration:'none',color:'black'}}> Already have an account? Sign in</Lk>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
     </div>
-    
   );
 }
