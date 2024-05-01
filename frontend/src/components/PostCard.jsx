@@ -1,14 +1,20 @@
 import React from 'react';
 import { FaThumbsUp, FaComment, FaShare } from 'react-icons/fa'; // Import icons from FontAwesome
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for navigation
 import defaultImage from '../assets/profile-img.jpg'; // Default image placeholder
 import axios from 'axios';
 
 const PostCard = ({ post, updatePosts }) => {
+  const history = useNavigate(); // Get history object from react-router-dom
   const { _id, mediaFile, caption, postedBy, numberOfLikes, numberOfComments } = post;
   const { username, name, profilepic } = postedBy;
-  console.log('no of likes', numberOfLikes)
 
   const postImg = mediaFile && mediaFile.length > 0 ? mediaFile[0] : null;
+
+  const handleCommentClick = () => {
+    // Navigate to the comments page with the post ID as a parameter
+    history(`/comments/${_id}`, { post });
+  };
 
   const handleLikeClick = async () => {
     try {
@@ -52,15 +58,14 @@ const PostCard = ({ post, updatePosts }) => {
 
       <div className='post-icons flex ml-4 mt-2'>
         <div className='icon-wrapper mr-6 flex flex-row' onClick={handleLikeClick} style={{ cursor: 'pointer' }}>
-        {numberOfLikes} <FaThumbsUp className='ml-2' size={24} />
+          {numberOfLikes} <FaThumbsUp className='ml-2' size={24} />
         </div>
-        <div className='icon-wrapper mr-6 flex flex-row'>
-        {numberOfComments} <FaComment className='ml-2' size={24} />
+        <div className='icon-wrapper mr-6 flex flex-row' onClick={handleCommentClick} style={{ cursor: 'pointer' }}>
+          {numberOfComments} <FaComment className='ml-2' size={24} />
         </div>
         <div className='icon-wrapper'>
           <FaShare size={24} />
         </div>
-        
       </div>
 
       <div className='textbody ml-4'>
