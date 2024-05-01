@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import ProfileEdit from './pages/ProfileEdit';
 import Comments from './pages/Comments';
 import Changepass from './pages/Changepass';
+
 const App = () => {
 
   return (
