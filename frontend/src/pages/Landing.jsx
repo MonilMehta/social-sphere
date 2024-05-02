@@ -1,62 +1,90 @@
-import React from 'react';
-import GoogleIcon from '@mui/icons-material/Google';
-import Logo from '../assets/Logo3.svg';
-import { Link as Lk} from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import './Landing.css'; // Importing external CSS file
+import Logo from "../assets/sphere.png";
 
 const Landing = () => {
   return (
-    <>
-      <div className='landing' style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center' }}>
-        <div style={{ marginLeft: '5rem' }}> {/* Adjusted margin-left here */}
-          <img src={Logo} alt='logo' className='logo' />
-        </div>
-        <div style={{ marginLeft: '28%', fontFamily: 'Poppins',display:'flex',flexDirection:'column',alignItems:'center'}}>
-          <h2 style={{ fontSize: '3rem' }}>Circling Now</h2>
-          <h3 style={{ fontSize: '1.5rem',marginTop:'2rem' }}>A place to share your thoughts and ideas</h3>
-          
-         
-          <button style={{
-            borderRadius: '25px',
-            background: 'White',
-            color: 'black',
-            border: '1px solid',
-            fontSize: '2rem',
-            padding: '10px 20px',
-            cursor: 'pointer',
-            fontFamily: 'Poppins',
-            textDecoration:'none',
-          }}> <Lk to='/signup'>Create Account</Lk>
-          </button>
-          <h4 style={{ fontSize: '1rem' }}>Already have an account?</h4>
-          <button style={{
-            borderRadius: '25px',
-            background: 'White',
-            color: 'black',
-            fontSize: '2rem',
-            width: '15rem',
-            border: '1px solid',
-            padding: '10px 20px',
-            cursor: 'pointer',
-            fontFamily: 'Poppins',
-          }}><Lk to='/signin'>Sign In</Lk>
-          </button>
-          <p style={{ color: 'black', marginTop: '1rem' }}>or</p> 
-          <button style={{
-            borderRadius: '25px',
-            background: 'White',
-            color: 'black',
-            marginTop: '2rem',
-            border: '1px solid',
-            fontSize: '2rem',
-            padding: '10px 20px',
-            cursor: 'pointer',
-            fontFamily: 'Poppins'
-          }}>Continue With  <GoogleIcon />
-          </button>
-        </div>
+    <div className="landing-container">
+      <div className="main-container">
+        <motion.div
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <img
+            src={Logo}
+            alt="logo"
+            style={{ width: "100%", marginTop: "4rem" }}
+          />
+          <motion.span
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2, duration: 0.5 }}
+            className="company-name"
+          >
+            Social Sphere, Inc.
+          </motion.span>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="signup-container"
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="headline"
+          >
+            Circling Now
+          </motion.h2>
+          <motion.h3
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="subheadline"
+          >
+            A place to share your thoughts and ideas
+          </motion.h3>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="signup-button"
+          >
+            <Link to="/signup" className="signup-link">
+              Create Account
+            </Link>
+          </motion.button>
+          <motion.h4
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 0.5 }}
+            className="signin-prompt"
+          >
+            Already have an account?
+          </motion.h4>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="signin-button"
+          >
+            <Link to="/signin" className="signin-link">
+              Sign In
+            </Link>
+          </motion.button>
+        </motion.div>
       </div>
-    </>
-  )
-}
+      <footer>
+        <nav>
+          <ul>{/* Add your navigation links here */}</ul>
+        </nav>
+        <span>&copy; Social Sphere, Inc.</span>
+      </footer>
+    </div>
+  );
+};
 
 export default Landing;
