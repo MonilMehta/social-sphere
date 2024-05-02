@@ -2,11 +2,21 @@ import React, { useState } from "react";
 import { FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../assets/profile-img.jpg";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import axios from "axios";
 
 const PostCard = ({ post, updatePosts }) => {
   const history = useNavigate();
-  const { _id, mediaFile, caption, postedBy, numberOfLikes, numberOfComments, hasUserLikedPost } = post;
+  const {
+    _id,
+    mediaFile,
+    caption,
+    postedBy,
+    numberOfLikes,
+    numberOfComments,
+    hasUserLikedPost,
+  } = post;
   const { username, name, profilepic } = postedBy;
 
   const postImg = mediaFile && mediaFile.length > 0 ? mediaFile[0] : null;
@@ -20,7 +30,7 @@ const PostCard = ({ post, updatePosts }) => {
       if (!accessToken) {
         throw new Error("Access token not found");
       }
-  
+
       const response = await axios.get(
         `https://social-sphere-xzkh.onrender.com/api/v1/comments/p/${_id}`,
         {
@@ -29,11 +39,18 @@ const PostCard = ({ post, updatePosts }) => {
           },
         }
       );
-  
-      setComments(response.data); // Assuming response.data is an array of comments
+      console.log(response);
+      setComments(response.data.data); // Assuming response.data is an array of comments
+      console.log(comments);
       setIsCommentModalOpen(true);
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      if(error.response.data.includes("Not Found"))
+      {
+        setIsCommentModalOpen(true);
+      }
+      else{
+        console.error("Error fetching comments:", error.response.data);
+      }
     }
   };
 
@@ -55,10 +72,36 @@ const PostCard = ({ post, updatePosts }) => {
       );
 
       console.log("Post liked successfully:", response.data);
+      window.alert("Comment Like toggled successfully !")
       // Update posts after like action
       updatePosts();
     } catch (error) {
       console.error("Error liking post:", error);
+    }
+  };
+
+  const handleCommentLikeClick = async (cId) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.post(
+        `https://social-sphere-xzkh.onrender.com/api/v1/likes/c/${cId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      console.log("Comment liked successfully:", response.data);
+      handleCommentClick();
+      window.alert("Comment Like toggled successfully !")
+    } catch (error) {
+      console.error("Error liking comment:", error);
     }
   };
 
@@ -72,7 +115,7 @@ const PostCard = ({ post, updatePosts }) => {
 
       const response = await axios.post(
         `https://social-sphere-xzkh.onrender.com/api/v1/comments/p/${_id}`,
-        { text: comment },
+        { content: comment },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -81,6 +124,7 @@ const PostCard = ({ post, updatePosts }) => {
       );
 
       console.log("Comment posted successfully:", response.data);
+      handleCommentClick();
       // Update comments after comment submission
       // You may fetch updated comments here or use the existing state
     } catch (error) {
@@ -105,11 +149,7 @@ const PostCard = ({ post, updatePosts }) => {
 
       <div className="h-3/4 flex justify-center">
         {postImg ? (
-          <img
-            src={postImg}
-            alt="Post Image"
-            className="rounded-md h-full "
-          />
+          <img src={postImg} alt="Post Image" className="rounded-md h-full " />
         ) : (
           <div className="h-full bg-slate-100"></div>
         )}
@@ -121,11 +161,12 @@ const PostCard = ({ post, updatePosts }) => {
           onClick={handleLikeClick}
           style={{ cursor: "pointer" }}
         >
-          {numberOfLikes} 
-          {hasUserLikedPost?
-            <FaThumbsUp className="ml-2 text-red-500" size={24} />:
+          {numberOfLikes}
+          {hasUserLikedPost ? (
+            <FaThumbsUp className="ml-2 text-red-500" size={24} />
+          ) : (
             <FaThumbsUp className="ml-2" size={24} />
-          }
+          )}
         </div>
         <div
           className="icon-wrapper mr-6 flex flex-row"
@@ -148,7 +189,7 @@ const PostCard = ({ post, updatePosts }) => {
         <div
           style={{
             position: "fixed",
-            top: 0,
+            top: 35,
             left: 0,
             width: "100%",
             height: "100%",
@@ -173,47 +214,104 @@ const PostCard = ({ post, updatePosts }) => {
           <div
             style={{
               backgroundColor: "white",
-              padding: "32px",
+              paddingLeft: "32px",
+              paddingRight: "32px",
+              paddingTop: "16px",
+              paddingBottom: "16px",
               borderRadius: "8px",
               zIndex: 90,
             }}
           >
-          <div className="flex flex-row items-center mb-5 ml-8">
-          <img
-            src={profilepic || defaultImage}
-            alt="User avatar"
-            className="w-12 h-12 rounded-full"
-          />
-          <h3 className="ml-2 text-black">@{username || "Unknown"}</h3>
-        </div>
-  
-        <div className="h-3/4 flex justify-center">
-          {postImg ? (
-            <img
-              src={postImg}
-              alt="Post Image"
-              className="rounded-md h-60 w-80"
-            />
-          ) : (
-            <div></div>
-          )}
-        </div>
-        <div>
-        {Array.isArray(comments) && comments.length > 0 && (
-          <div>
-            {comments.map((comment) => (
-              <div key={comment._id} style={{ marginBottom: "8px" }}>
-                <p style={{ marginBottom: "4px" }}>{comment.content}</p>
-                <p style={{ fontSize: "0.8rem", color: "#888" }}>
-                  Posted by: @{comment.commentedBy.username}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+            <div className="flex flex-row items-center mb-5 ml-8">
+              <img
+                src={profilepic || defaultImage}
+                alt="User avatar"
+                className="w-12 h-12 rounded-full"
+              />
+              <h3 className="ml-2 text-black">@{username || "Unknown"}</h3>
+            </div>
 
-            <h2 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "16px" }}>
+            <div className="h-3/4 flex justify-center">
+              {postImg ? (
+                <img
+                  src={postImg}
+                  alt="Post Image"
+                  className="rounded-md h-60 w-80"
+                />
+              ) : (
+                <div></div>
+              )}
+            </div>
+            <div>
+              {comments && Array.isArray(comments) && (
+                <div className="max-h-32 mt-2 overflow-y-auto">
+                  {comments.map((comment) => (
+                    <div key={comment._id} className="flex w-full items-center">
+                      <div
+                        className="w-12 h-12 mr-2 mt-1 mb-1 border-b border-red-400 rounded-full"
+                        onClick={() =>
+                          history(
+                            `/profile/${
+                              comment.commentedBy.username ||
+                              comment.commentedBy[0].username
+                            }`
+                          )
+                        }
+                      >
+                        <img
+                          src={
+                            comment.commentedBy.profilepic ||
+                            comment.commentedBy[0].profilepic ||
+                            "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+                          }
+                          alt=""
+                          className="rounded-full h-12 w-12"
+                        />
+                      </div>
+                      <div className="w-48">
+                        <div
+                          onClick={() =>
+                            history(
+                              `/profile/${
+                                comment.commentedBy.username ||
+                                comment.commentedBy[0].username
+                              }`
+                            )
+                          }
+                        >
+                          @
+                          {comment.commentedBy.username ||
+                            comment.commentedBy[0].username}
+                        </div>
+                        <div className="font-semibold">
+                          {comment.content || comment.content}
+                        </div>
+                      </div>
+                      <div className="pl-8 pt-4">
+                        <span
+                          onClick={() => handleCommentLikeClick(comment._id)}
+                        >
+                          {comment.hasUserLikedComment ? (
+                            <FavoriteIcon />
+                          ) : (
+                            <FavoriteBorderIcon />
+                          )}
+                        </span>
+                        <span>{comment.numberOfLikes}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <h2
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: "600",
+                marginBottom: "0.5rem",
+              }}
+            >
               Add a Comment
             </h2>
             <textarea
@@ -221,17 +319,18 @@ const PostCard = ({ post, updatePosts }) => {
               onChange={(e) => setComment(e.target.value)}
               style={{
                 width: "100%",
-                height: "100px",
+                height: "4rem",
                 padding: "8px",
                 border: "1px solid #ccc",
                 borderRadius: "4px",
-                marginBottom: "16px",
+                marginBottom: "0.5rem",
               }}
               placeholder="Write your comment..."
             />
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button
                 onClick={() => {
+                  updatePosts();
                   setIsCommentModalOpen(false);
                   setComment("");
                 }}
@@ -263,6 +362,5 @@ const PostCard = ({ post, updatePosts }) => {
     </div>
   );
 };
-
 
 export default PostCard;

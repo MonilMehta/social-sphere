@@ -26,6 +26,11 @@ const Navbar = () => {
     console.log(res.data);
     navigate(`/profile/${res.data.data.username}`)
   };
+
+  const handleLogout = async () => {
+    localStorage.removeItem("accessToken");
+    navigate("/signin");
+}
   return (
     // <nav className="navbar">
     //   <div className="navbar-logo">
@@ -79,7 +84,8 @@ const Navbar = () => {
               className="inline-block py-2 px-4 hover:bg-gray-200 border rounded-full"
               href="#"
             >
-              <div className="flex items-center relative cursor-pointer whitespace-nowrap">
+              <div className="flex items-center relative cursor-pointer whitespace-nowrap"
+              onClick={handleLogout}>
                 <a href="/signin">Logout</a>
               </div>
             </a>
