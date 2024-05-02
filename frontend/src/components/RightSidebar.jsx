@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import AvatarPlaceholder from "../assets/profile-img.jpg"; // Placeholder image for user avatar
-import { MdAdd } from "react-icons/md"; // Plus icon from React Icons
+import AvatarPlaceholder from "../assets/profile-img.jpg"; 
+import { MdAdd } from "react-icons/md"; 
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import axios from "axios";
 
 const RightSidebar = () => {
@@ -8,24 +9,29 @@ const RightSidebar = () => {
   const [users, setUsers] = useState([]);
   const [render, setRender] = useState(false);
 
-  useEffect(() => {
-    const handleUsers = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      if (!accessToken) {
-        throw new Error("Access token not found");
+  const handleUsers = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token not found");
+    }
+    let res = await axios.get(
+      "https://social-sphere-xzkh.onrender.com/api/v1/users/random-users",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
-      let res = await axios.get(
-        "https://social-sphere-xzkh.onrender.com/api/v1/users/random-users",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log(res.data.data);
-      setUsers(res.data.data)
-      setRender(true)
-    };
+    );
+    console.log(res.data.data);
+    let usersData = res.data.data.map(user => ({
+      ...user,
+      followed: false
+    }));
+    console.log(usersData);
+    setUsers(usersData)
+    setRender(true)
+  };
+  useEffect(() => {
     handleUsers();
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -38,8 +44,28 @@ const RightSidebar = () => {
 
   const translation = Math.min(scrollY, 160);
 
-  const handleFollow = (userId) => {
-    // Logic to handle follow action (e.g., add user to followed list)
+  const handleFollow = async (userId) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      const response = await axios.post(
+        `https://social-sphere-xzkh.onrender.com/api/v1/follows/toggle/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response);
+      window.alert("Followed Successfully")
+      handleUsers();
+    } catch (error) {
+      console.error("Error following / unfollowing user:", error);
+    }
     console.log(`Follow user with ID ${userId}`);
   };
 
@@ -59,9 +85,12 @@ const RightSidebar = () => {
             </div>
             <button
               className="bg-black text-white rounded-full p-2"
-              onClick={() => handleFollow(user.id)}
+              onClick={() => {handleFollow(user._id)
+              user.followed = true}}
             >
-              <MdAdd />
+              {
+                user.followed? <CheckCircleIcon/> : <MdAdd/>
+              }
             </button>
           </li>
         ))}

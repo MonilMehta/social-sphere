@@ -76,11 +76,11 @@ const Navbar = () => {
         <div className="flex justify-end items-center relative">
           <div className="flex mr-4 items-center">
             <a
-              className="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"
+              className="inline-block py-2 px-4 hover:bg-gray-200 border rounded-full"
               href="#"
             >
               <div className="flex items-center relative cursor-pointer whitespace-nowrap">
-                <a href="/signin">Login / Logout</a>
+                <a href="/signin">Logout</a>
               </div>
             </a>
           </div>
