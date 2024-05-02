@@ -44,7 +44,7 @@ export default function Signup() {
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 5000,
+          // timeout: 5000,
         }
       );
       console.log('User registered successfully:', response.data);
