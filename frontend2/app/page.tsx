@@ -1,115 +1,342 @@
 'use client';
-import Head from 'next/head';
-import Spline from '@splinetool/react-spline/next';
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Users, MessageCircle, Shield, Heart, Lock, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import './globals.css';
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <>
-      <Head>
-        <title>Social Sphere - Modern, Secure, Private, You.</title>
-        <meta name="description" content="Join Social Sphere, the new standard for social networking." />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
-      </Head>
-      <main className="flex flex-col items-center justify-start min-h-screen bg-beige-50 text-brown-700 p-4 overflow-x-hidden">
-        {/* Combined Hero Section: Spline + Text in a row */}
-        <section className="w-full flex flex-col md:flex-row items-center justify-around my-8 md:my-12 gap-8 px-4 md:px-8 hero-section-combined">
-          {/* Spline Animation Container */}
-          <div className="w-full md:w-2/5 lg:w-1/2 h-[50vh] md:h-[60vh] flex items-center justify-center spline-container-visual">
-            <Spline scene="https://prod.spline.design/gWGqtDBFlrUsmUe8/scene.splinecode" className="w-full h-full rounded-lg shadow-xl" />
+    <div className="min-h-screen bg-cream-50">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-sm border-b border-cream-200">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-cream-900 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">SF</span>
+              </div>
+              <span className="font-special text-xl text-cream-900">
+                SocialFlow
+              </span>
+            </div>
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-cream-700 hover:text-cream-900 transition-colors font-medium">Features</a>
+              <a href="#privacy" className="text-cream-700 hover:text-cream-900 transition-colors font-medium">Privacy</a>
+              <a href="#community" className="text-cream-700 hover:text-cream-900 transition-colors font-medium">Community</a>
+              <Button size="sm" className="bg-cream-900 text-white hover:bg-cream-900/90">Get Started</Button>
+            </div>
           </div>
+        </div>
+      </nav>
 
-          {/* Hero Text Content Container */}
-          <div className="w-full md:w-3/5 lg:w-1/2 text-center md:text-left flex flex-col items-center md:items-start justify-center hero-text-content">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-caveat font-bold text-brown-800 mb-6 animate-fadeInUp">
-              Social Sphere
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-brown-600 mb-10 animate-fadeInUp animation-delay-300 font-inter">
-              Modern, Secure, Private, <span className="text-teal-600 font-semibold">You.</span>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center px-4 py-2 rounded-full bg-cream-100 border border-cream-200 text-sm font-medium text-cream-700 mb-8"
+            >
+              <Lock className="w-4 h-4 mr-2" />
+              Privacy-first social networking
+            </motion.div>
+            
+            {/* Main Heading */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <h1 className="text-5xl md:text-7xl font-light text-cream-900 mb-6 leading-tight">
+                Share your{' '}
+                <span className="font-special italic text-cream-300">private moments</span>
+                <br />
+                with your loved ones
+              </h1>
+            </motion.div>
+            
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl text-cream-700 mb-10 leading-relaxed max-w-2xl mx-auto"
+            >
+              A safe space for authentic connections. Share, connect, and build 
+              meaningful relationships without compromising your privacy.
+            </motion.p>
+            
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            >
+              <Button size="lg" className="bg-cream-900 text-white hover:bg-cream-900/90 px-8 py-3 text-lg">
+                Start Your Journey
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button variant="outline" size="lg" className="border-cream-300 text-cream-700 hover:bg-cream-100 px-8 py-3 text-lg">
+                Learn More
+              </Button>
+            </motion.div>
+
+            {/* Hero Visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="relative max-w-3xl mx-auto"
+            >
+              <div className="bg-white rounded-3xl p-8 shadow-minimalist-md border border-cream-200">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Private Sharing Card */}
+                  <div className="bg-cream-50 rounded-2xl p-6 text-center">
+                    <div className="w-12 h-12 bg-cream-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Heart className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-cream-900 mb-2">Private Sharing</h3>
+                    <p className="text-sm text-cream-700">Share moments with selected friends only</p>
+                  </div>
+
+                  {/* Secure Messages Card */}
+                  <div className="bg-cream-50 rounded-2xl p-6 text-center">
+                    <div className="w-12 h-12 bg-cream-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Shield className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-cream-900 mb-2">Secure Messages</h3>
+                    <p className="text-sm text-cream-700">End-to-end encrypted conversations</p>
+                  </div>
+
+                  {/* Trusted Circle Card */}
+                  <div className="bg-cream-50 rounded-2xl p-6 text-center">
+                    <div className="w-12 h-12 bg-cream-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-cream-900 mb-2">Trusted Circle</h3>
+                    <p className="text-sm text-cream-700">Connect with meaningful relationships</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>      {/* Features Section */}
+      <section id="features" className="py-20 px-6 bg-cream-100">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-light text-cream-900 mb-6">
+              Built for <span className="font-special italic">authentic</span> connections
+            </h2>
+            <p className="text-xl text-cream-700 max-w-3xl mx-auto leading-relaxed">
+              Experience social networking that prioritizes your privacy, 
+              meaningful relationships, and genuine conversations.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mt-8">
-              <button className="bg-teal-500 hover:bg-teal-600 text-white font-inter font-semibold py-3 px-8 rounded-lg text-lg shadow-lg transform transition-transform duration-300 hover:scale-105 animate-fadeInUp animation-delay-600 w-full sm:w-auto">
-                Sign Up
-              </button>
-              <button className="bg-transparent hover:bg-teal-100 text-teal-600 font-inter font-semibold py-3 px-8 rounded-lg text-lg shadow-md border border-teal-500 transform transition-transform duration-300 hover:scale-105 animate-fadeInUp animation-delay-700 w-full sm:w-auto">
-                Login
-              </button>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Shield,
+                title: "Privacy First",
+                description: "End-to-end encryption ensures your conversations stay private. Your data belongs to you, not advertisers."
+              },
+              {
+                icon: Users,
+                title: "Real Connections",
+                description: "Quality over quantity. Connect with people who share your interests and values, not just follower counts."
+              },
+              {
+                icon: MessageCircle,
+                title: "Meaningful Conversations",
+                description: "Tools designed to foster deep discussions and authentic sharing, moving beyond surface-level interactions."
+              },
+              {
+                icon: Heart,
+                title: "Trusted Circle",
+                description: "Share your moments with a curated group of close friends and family in a safe, private environment."
+              },
+              {
+                icon: Lock,
+                title: "Mental Well-being",
+                description: "Features designed to promote positive interactions and reduce social media anxiety and comparison."
+              },
+              {
+                icon: Star,
+                title: "Authentic Sharing",
+                description: "Encourage genuine moments and real stories without the pressure of likes or public validation."
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-8 shadow-minimalist border border-cream-200 hover:shadow-minimalist-md transition-all duration-300"
+              >
+                <div className="w-14 h-14 bg-cream-100 rounded-2xl flex items-center justify-center mb-6">
+                  <feature.icon className="w-7 h-7 text-cream-300" />
+                </div>
+                <h3 className="text-xl font-semibold text-cream-900 mb-3">{feature.title}</h3>
+                <p className="text-cream-700 leading-relaxed">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {[
+              { number: "10K+", label: "Trusted Users" },
+              { number: "1M+", label: "Private Moments" },
+              { number: "50+", label: "Countries" },
+              { number: "99.9%", label: "Uptime" }
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="space-y-3"
+              >
+                <div className="text-4xl md:text-5xl font-light text-cream-900">{stat.number}</div>
+                <div className="text-cream-700 font-medium">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>      {/* Testimonials */}
+      <section id="community" className="py-20 px-6 bg-cream-100">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-light text-cream-900 mb-6">
+              Loved by our <span className="font-special italic">community</span>
+            </h2>
+            <p className="text-xl text-cream-700">
+              See what people are saying about SocialFlow
+            </p>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Chen",
+                handle: "@sarahc",
+                content: "Finally, a platform where I can share my real moments with people who matter, without worrying about privacy.",
+                avatar: "SC"
+              },
+              {
+                name: "Marcus Johnson",
+                handle: "@mjohnson",
+                content: "The intimacy of sharing with just my close circle has brought back the joy of social media for me.",
+                avatar: "MJ"
+              },
+              {
+                name: "Elena Rodriguez",
+                handle: "@elena_r",
+                content: "Love how SocialFlow protects my family moments while keeping us connected with loved ones.",
+                avatar: "ER"
+              }
+            ].map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-8 shadow-minimalist border border-cream-200"
+              >
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-cream-300 rounded-full flex items-center justify-center text-white font-semibold">
+                    {testimonial.avatar}
+                  </div>
+                  <div className="ml-4">
+                    <p className="font-semibold text-cream-900">{testimonial.name}</p>
+                    <p className="text-cream-700">{testimonial.handle}</p>
+                  </div>
+                </div>
+                <p className="text-cream-700 leading-relaxed">{testimonial.content}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="bg-cream-100 rounded-3xl p-12 border border-cream-200"
+          >
+            <h2 className="text-4xl md:text-5xl font-light text-cream-900 mb-6">
+              Ready to join <span className="font-special italic">SocialFlow</span>?
+            </h2>
+            <p className="text-xl text-cream-700 mb-10 leading-relaxed">
+              Start sharing your private moments in a safe, meaningful environment 
+              designed for authentic connections.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-cream-900 text-white hover:bg-cream-900/90 px-8 py-3 text-lg">
+                Get Started Free
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button variant="outline" size="lg" className="border-cream-300 text-cream-700 hover:bg-cream-50 px-8 py-3 text-lg">
+                Learn More
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-16 px-6 border-t border-cream-200">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-3 mb-6 md:mb-0">
+              <div className="w-8 h-8 bg-cream-900 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">SF</span>
+              </div>
+              <span className="font-special text-xl text-cream-900">
+                SocialFlow
+              </span>
+            </div>
+            <div className="flex space-x-8 text-cream-700">
+              <a href="#" className="hover:text-cream-900 transition-colors font-medium">Privacy</a>
+              <a href="#" className="hover:text-cream-900 transition-colors font-medium">Terms</a>
+              <a href="#" className="hover:text-cream-900 transition-colors font-medium">Support</a>
+              <a href="#" className="hover:text-cream-900 transition-colors font-medium">About</a>
             </div>
           </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="py-16 md:py-24 w-full max-w-5xl features-section">
-          <h2 className="text-4xl md:text-5xl font-caveat font-bold text-brown-800 text-center mb-12 md:mb-16 animate-fadeInUp animation-delay-900">
-            Why Social Sphere?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 font-inter">
-            {/* Feature 1: Modern */}
-            <div className="bg-white bg-opacity-70 p-6 rounded-xl shadow-xl transform transition-transform duration-300 hover:scale-105 hover:shadow-teal-500/20 animate-fadeInUp animation-delay-1200">
-              <div className="text-teal-500 mb-4 text-3xl"> ✨ </div>
-              <h3 className="text-2xl font-semibold text-brown-700 mb-3">Modern</h3>
-              <p className="text-brown-600">
-                Experience a sleek, intuitive interface designed for today's social interactions.
-              </p>
-            </div>
-
-            {/* Feature 2: Secure */}
-            <div className="bg-white bg-opacity-70 p-6 rounded-xl shadow-xl transform transition-transform duration-300 hover:scale-105 hover:shadow-teal-500/20 animate-fadeInUp animation-delay-1400">
-              <div className="text-teal-500 mb-4 text-3xl"> 🛡️ </div>
-              <h3 className="text-2xl font-semibold text-brown-700 mb-3">Secure</h3>
-              <p className="text-brown-600">
-                Your data is protected with end-to-end encryption and robust security measures.
-              </p>
-            </div>
-
-            {/* Feature 3: Private */}
-            <div className="bg-white bg-opacity-70 p-6 rounded-xl shadow-xl transform transition-transform duration-300 hover:scale-105 hover:shadow-teal-500/20 animate-fadeInUp animation-delay-1600">
-              <div className="text-teal-500 mb-4 text-3xl"> 🔒 </div>
-              <h3 className="text-2xl font-semibold text-brown-700 mb-3">Private</h3>
-              <p className="text-brown-600">
-                Control your privacy with granular settings. What you share is up to you.
-              </p>
-            </div>
-
-            {/* Feature 4: You */}
-            <div className="bg-white bg-opacity-70 p-6 rounded-xl shadow-xl transform transition-transform duration-300 hover:scale-105 hover:shadow-teal-500/20 animate-fadeInUp animation-delay-1800">
-              <div className="text-teal-500 mb-4 text-3xl"> 👤 </div>
-              <h3 className="text-2xl font-semibold text-brown-700 mb-3">You</h3>
-              <p className="text-brown-600">
-                A platform built around your needs, fostering genuine connections.
-              </p>
-            </div>
+          <div className="text-center mt-12 text-cream-500">
+            <p className="font-light">© {new Date().getFullYear()} SocialFlow. Crafted with care for meaningful connections.</p>
           </div>
-        </section>
-        
-        {/* Testimonials Section Placeholder */}
-        <section className="py-16 md:py-24 w-full max-w-5xl testimonials-section">
-          <h2 className="text-4xl md:text-5xl font-caveat font-bold text-brown-800 text-center mb-12 md:mb-16 animate-fadeInUp animation-delay-900">
-            Loved by Users
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-inter">
-            {/* Testimonial 1 */}
-            <div className="bg-white bg-opacity-70 p-8 rounded-xl shadow-xl animate-fadeInUp animation-delay-1200">
-              <p className="text-brown-600 italic mb-4">
-                "Social Sphere has changed how I connect online. It's so refreshing to have a platform that prioritizes privacy and genuine interaction!"
-              </p>
-              <p className="text-brown-700 font-semibold">- Alex P.</p>
-            </div>
-            {/* Testimonial 2 */}
-            <div className="bg-white bg-opacity-70 p-8 rounded-xl shadow-xl animate-fadeInUp animation-delay-1400">
-              <p className="text-brown-600 italic mb-4">
-                "Finally, a social media app that feels modern and secure. The design is beautiful and it's incredibly easy to use."
-              </p>
-              <p className="text-brown-700 font-semibold">- Jamie L.</p>
-            </div>
-          </div>
-        </section>
-
-        <footer className="text-center py-10 mt-16 border-t border-brown-200 w-full max-w-5xl animate-fadeInUp animation-delay-2100 font-inter">
-          <p className="text-brown-500">&copy; {new Date().getFullYear()} Social Sphere. All rights reserved.</p>
-        </footer>
-      </main>
-    </>
+        </div>
+      </footer>
+    </div>
   );
 }

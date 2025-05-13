@@ -1,88 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@theme {
+  /* Cream Theme Variables */
+  --color-background: 42 15% 98%;      /* cream-50 */
+  --color-foreground: 30 10% 16%;      /* cream-900 */
+  --color-card: 0 0% 100%;             /* white */
+  --color-card-foreground: 30 10% 16%; /* cream-900 */
+  --color-popover: 0 0% 100%;          /* white */
+  --color-popover-foreground: 30 10% 16%;
+  --color-primary: 30 10% 16%;         /* cream-900 */
+  --color-primary-foreground: 0 0% 100%;
+  --color-secondary: 35 22% 95%;       /* cream-100 */
+  --color-secondary-foreground: 30 10% 16%;
+  --color-muted: 35 22% 95%;           /* cream-100 */
+  --color-muted-foreground: 0 0% 42%;  /* cream-700 */
+  --color-accent: 34 40% 64%;          /* cream-300 */
+  --color-accent-foreground: 30 10% 16%;
+  --color-destructive: 0 84.2% 60.2%;
+  --color-destructive-foreground: 210 40% 98%;
+  --color-border: 35 15% 88%;          /* cream-200 */
+  --color-input: 35 15% 88%;           /* cream-200 */
+  --color-ring: 30 10% 16%;            /* cream-900 */
+  --radius: 0.75rem;
+  
+  /* Custom cream colors */
+  --color-cream-50: 42 15% 98%;    /* #FEFBF6 */
+  --color-cream-100: 35 22% 95%;   /* #F7F3ED */
+  --color-cream-200: 35 15% 88%;   /* #E8E1D8 */
+  --color-cream-300: 34 40% 64%;   /* #D4A574 */
+  --color-cream-400: 33 37% 58%;   /* #C19B63 */
+  --color-cream-500: 0 0% 60%;     /* #9A9A9A */
+  --color-cream-700: 0 0% 42%;     /* #6B6B6B */
+  --color-cream-900: 30 10% 16%;   /* #2D2A26 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  * {
+    border-color: hsl(var(--color-border));
   }
-}
-
-body {
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  color: rgb(var(--foreground-rgb));
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scroll on animations */
+  
+  body {
+    background-color: hsl(var(--color-background));
+    color: hsl(var(--color-foreground));
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    line-height: 1.6;
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .font-special {
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
   }
-}
-
-/* Animation Keyframes */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  
+  .shadow-minimalist {
+    box-shadow: 0 1px 3px 0 rgba(45, 42, 38, 0.1), 0 1px 2px 0 rgba(45, 42, 38, 0.06);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .shadow-minimalist-md {
+    box-shadow: 0 4px 6px -1px rgba(45, 42, 38, 0.1), 0 2px 4px -1px rgba(45, 42, 38, 0.06);
   }
-}
-
-/* Animation Classes */
-.animate-fadeInUp {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-/* Animation Delays (utility classes) */
-.animation-delay-300 {
-  animation-delay: 0.3s;
-}
-.animation-delay-600 {
-  animation-delay: 0.6s;
-}
-.animation-delay-900 {
-  animation-delay: 0.9s;
-}
-.animation-delay-1200 {
-  animation-delay: 1.2s;
-}
-.animation-delay-1400 {
-  animation-delay: 1.4s;
-}
-.animation-delay-1600 {
-  animation-delay: 1.6s;
-}
-.animation-delay-1800 {
-  animation-delay: 1.8s;
-}
-.animation-delay-2100 {
-  animation-delay: 2.1s;
-}
-
-/* Ensure body takes full height for vertical centering if needed */
-html, body, #__next {
-  height: 100%;
 }
