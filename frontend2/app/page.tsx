@@ -3,9 +3,84 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ArrowRight, Users, MessageCircle, Shield, Heart, Lock, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { useState, useEffect } from "react";
 import './globals.css';
 
-export default function Home() {  return (
+// Image Carousel Component
+const ImageCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const images = ['/1.jpg', '/2.jpg', '/3.jpg', '/4.jpg'];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 2000); // Change image every 2 seconds
+
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="relative inline-block w-16 h-16 ml-3 align-middle">
+      <div className="absolute inset-0 rounded-full overflow-hidden border-2 border-cream-300 dark:border-cream-300 shadow-lg">
+        {images.map((image, index) => (
+          <motion.div
+            key={image}
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: index === currentIndex ? 1 : 0,
+              scale: index === currentIndex ? 1 : 0.8
+            }}
+            transition={{ duration: 0.5 }}
+          >
+            <Image
+              src={image}
+              alt={`Moment ${index + 1}`}
+              fill
+              className="object-cover"
+            />
+          </motion.div>
+        ))}
+      </div>
+      {/* Small indicators */}
+      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+        {images.map((_, index) => (
+          <div
+            key={index}
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+              index === currentIndex 
+                ? 'bg-cream-300 dark:bg-cream-300' 
+                : 'bg-cream-200 dark:bg-cream-500'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Animated Lock Component
+const AnimatedLock = () => {
+  return (
+    <motion.div
+      className="inline-block ml-2 mr-2 align-middle"
+      animate={{ 
+        rotateY: [0, 15, -15, 0],
+        scale: [1, 1.1, 1]
+      }}
+      transition={{ 
+        duration: 2,
+        repeat: Infinity,
+        repeatDelay: 3
+      }}
+    >
+      <Lock className="w-8 h-8 text-cream-300 dark:text-cream-300" />
+    </motion.div>
+  );
+};
+
+export default function Home() {return (
     <div className="min-h-screen bg-cream-50 dark:bg-cream-50">
         <motion.nav
         initial={{ opacity: 0, y: -20 }}
@@ -15,13 +90,19 @@ export default function Home() {  return (
        >
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-cream-900 dark:bg-cream-300 rounded-lg flex items-center justify-center">
-                <span className="text-white dark:text-cream-900 font-bold text-sm">SF</span>
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/logo.png"
+                  alt="SocialFlow Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
               </div>
               <span className="font-special text-xl text-cream-900 dark:text-cream-900">
                 SocialFlow
               </span>
-            </div>            <div className="hidden md:flex items-center space-x-8">
+            </div><div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Features</a>
               <a href="#privacy" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Privacy</a>
               <a href="#community" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Community</a>
@@ -60,7 +141,15 @@ export default function Home() {  return (
               transition={{ duration: 0.6, delay: 0.1 }}
             >              <h1 className="text-5xl md:text-7xl font-light text-cream-900 dark:text-cream-900 mb-6 leading-tight">
                 Share your{' '}
-                <span className="font-special italic text-cream-300 dark:text-cream-300">private moments</span>
+                <span className="font-special italic text-cream-300 dark:text-cream-300 inline-flex items-center">
+                  <AnimatedLock />
+                  private
+                </span>
+                {' '}
+                <span className="font-special italic text-cream-300 dark:text-cream-300 inline-flex items-center">
+                  moments
+                  <ImageCarousel />
+                </span>
                 <br />
                 with your loved ones
               </h1>
@@ -295,10 +384,15 @@ export default function Home() {  return (
       </section>      {/* Footer */}
       <footer className="py-16 px-6 border-t border-cream-200 dark:border-cream-200">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-6 md:mb-0">
-              <div className="w-8 h-8 bg-cream-900 dark:bg-cream-300 rounded-lg flex items-center justify-center">
-                <span className="text-white dark:text-cream-900 font-bold text-sm">SF</span>
+          <div className="flex flex-col md:flex-row justify-between items-center">            <div className="flex items-center space-x-3 mb-6 md:mb-0">
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/logo.png"
+                  alt="SocialFlow Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
               </div>
               <span className="font-special text-xl text-cream-900 dark:text-cream-900">
                 SocialFlow
