@@ -21,8 +21,8 @@ const ImageCarousel = () => {
   }, [images.length]);
 
   return (
-    <div className="relative inline-block w-16 h-16 ml-3 align-middle">
-      <div className="absolute inset-0 rounded-full overflow-hidden border-2 border-cream-300 dark:border-cream-300 shadow-lg">
+    <div className="relative inline-block w-24 h-24 ml-4 align-middle">
+      <div className="absolute inset-0 rounded-full overflow-hidden border-3 border-cream-300 dark:border-cream-300 shadow-lg">
         {images.map((image, index) => (
           <motion.div
             key={image}
@@ -44,11 +44,11 @@ const ImageCarousel = () => {
         ))}
       </div>
       {/* Small indicators */}
-      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+      <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
         {images.map((_, index) => (
           <div
             key={index}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+            className={`w-2 h-2 rounded-full transition-colors ${
               index === currentIndex 
                 ? 'bg-cream-300 dark:bg-cream-300' 
                 : 'bg-cream-200 dark:bg-cream-500'
@@ -64,7 +64,7 @@ const ImageCarousel = () => {
 const AnimatedLock = () => {
   return (
     <motion.div
-      className="inline-block ml-2 mr-2 align-middle"
+      className="inline-block ml-3 mr-3 align-middle"
       animate={{ 
         rotateY: [0, 15, -15, 0],
         scale: [1, 1.1, 1]
@@ -75,7 +75,7 @@ const AnimatedLock = () => {
         repeatDelay: 3
       }}
     >
-      <Lock className="w-8 h-8 text-cream-300 dark:text-cream-300" />
+      <Lock className="w-12 h-12 text-cream-300 dark:text-cream-300" />
     </motion.div>
   );
 };
@@ -90,18 +90,15 @@ export default function Home() {return (
        >
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 relative">
+              <div className="w-10 h-10 relative">
                 <Image
                   src="/logo.png"
                   alt="SocialFlow Logo"
-                  width={32}
-                  height={32}
+                  width={100}
+                  height={80}
                   className="rounded-lg"
                 />
               </div>
-              <span className="font-special text-xl text-cream-900 dark:text-cream-900">
-                SocialFlow
-              </span>
             </div><div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Features</a>
               <a href="#privacy" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Privacy</a>
@@ -139,19 +136,17 @@ export default function Home() {return (
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-            >              <h1 className="text-5xl md:text-7xl font-light text-cream-900 dark:text-cream-900 mb-6 leading-tight">
-                Share your{' '}
-                <span className="font-special italic text-cream-300 dark:text-cream-300 inline-flex items-center">
+            >              <h1 className="text-5xl md:text-7xl font-light text-cream-900 dark:text-cream-900 mb-6 leading-tight flex flex-wrap items-center justify-center">
+                <span>Share your</span>
+                <span className="font-special italic text-cream-300 dark:text-cream-300 flex items-center mx-4">
                   <AnimatedLock />
                   private
                 </span>
-                {' '}
-                <span className="font-special italic text-cream-300 dark:text-cream-300 inline-flex items-center">
+                <span className="font-special italic text-cream-300 dark:text-cream-300 flex items-center mx-4">
                   moments
                   <ImageCarousel />
                 </span>
-                <br />
-                with your loved ones
+                <span className="w-full text-center mt-4">with your loved ones</span>
               </h1>
             </motion.div>
             
@@ -385,18 +380,15 @@ export default function Home() {return (
       <footer className="py-16 px-6 border-t border-cream-200 dark:border-cream-200">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">            <div className="flex items-center space-x-3 mb-6 md:mb-0">
-              <div className="w-8 h-8 relative">
+              <div className="w-10 h-10 relative">
                 <Image
                   src="/logo.png"
                   alt="SocialFlow Logo"
-                  width={32}
-                  height={32}
+                  width={100}
+                  height={80}
                   className="rounded-lg"
                 />
               </div>
-              <span className="font-special text-xl text-cream-900 dark:text-cream-900">
-                SocialFlow
-              </span>
             </div>
             <div className="flex space-x-8 text-cream-700 dark:text-cream-700">
               <a href="#" className="hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Privacy</a>
