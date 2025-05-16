@@ -213,52 +213,82 @@ export default function Home() {return (
               meaningful relationships, and genuine conversations.
             </p>
           </motion.div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 icon: Shield,
                 title: "Privacy First",
-                description: "End-to-end encryption ensures your conversations stay private. Your data belongs to you, not advertisers."
+                description: "End-to-end encryption ensures your conversations stay private. Your data belongs to you, not advertisers.",
+                gradient: "from-emerald-400 to-teal-500",
+                bgPattern: "bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20"
               },
               {
                 icon: Users,
                 title: "Real Connections",
-                description: "Quality over quantity. Connect with people who share your interests and values, not just follower counts."
+                description: "Quality over quantity. Connect with people who share your interests and values, not just follower counts.",
+                gradient: "from-blue-400 to-indigo-500",
+                bgPattern: "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20"
               },
               {
                 icon: MessageCircle,
                 title: "Meaningful Conversations",
-                description: "Tools designed to foster deep discussions and authentic sharing, moving beyond surface-level interactions."
+                description: "Tools designed to foster deep discussions and authentic sharing, moving beyond surface-level interactions.",
+                gradient: "from-purple-400 to-pink-500",
+                bgPattern: "bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20"
               },
               {
                 icon: Heart,
                 title: "Trusted Circle",
-                description: "Share your moments with a curated group of close friends and family in a safe, private environment."
+                description: "Share your moments with a curated group of close friends and family in a safe, private environment.",
+                gradient: "from-rose-400 to-red-500",
+                bgPattern: "bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20"
               },
               {
                 icon: Lock,
                 title: "Mental Well-being",
-                description: "Features designed to promote positive interactions and reduce social media anxiety and comparison."
+                description: "Features designed to promote positive interactions and reduce social media anxiety and comparison.",
+                gradient: "from-amber-400 to-orange-500",
+                bgPattern: "bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20"
               },
               {
                 icon: Star,
                 title: "Authentic Sharing",
-                description: "Encourage genuine moments and real stories without the pressure of likes or public validation."
-              }
-            ].map((feature, index) => (
+                description: "Encourage genuine moments and real stories without the pressure of likes or public validation.",
+                gradient: "from-violet-400 to-purple-500",
+                bgPattern: "bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20"
+              }            ].map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}                viewport={{ once: true }}
-                className="bg-white dark:bg-cream-200 rounded-3xl p-8 shadow-minimalist border border-cream-200 dark:border-cream-300 hover:shadow-minimalist-md transition-all duration-300"
-              >
-                <div className="w-14 h-14 bg-cream-100 dark:bg-cream-300 rounded-2xl flex items-center justify-center mb-6">
-                  <feature.icon className="w-7 h-7 text-cream-300 dark:text-cream-900" />
-                </div>
-                <h3 className="text-xl font-semibold text-cream-900 dark:text-cream-900 mb-3">{feature.title}</h3>
-                <p className="text-cream-700 dark:text-cream-700 leading-relaxed">{feature.description}</p>
+                whileInView={{ opacity: 1, y: 0 }}                whileHover={{ 
+                  y: -6,
+                  scale: 1.02,
+                  transition: { duration: 0.2, ease: "easeOut" }
+                }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.1
+                }}
+                viewport={{ once: true }}
+                className="group bg-white dark:bg-cream-200 rounded-3xl p-8 shadow-minimalist border border-cream-200 dark:border-cream-300 hover:shadow-2xl hover:border-cream-300/80 dark:hover:border-cream-400/60 transition-all duration-300 cursor-pointer"
+              >                <motion.div 
+                  className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 transition-all duration-200`}
+                  whileHover={{ 
+                    scale: 1.1,
+                    rotate: 5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <feature.icon className="w-7 h-7 text-white" />
+                </motion.div>
+                
+                <h3 className="text-xl font-semibold text-cream-900 dark:text-cream-900 mb-3 group-hover:text-cream-800 dark:group-hover:text-cream-800 transition-colors duration-200">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-cream-700 dark:text-cream-700 leading-relaxed group-hover:text-cream-600 dark:group-hover:text-cream-600 transition-colors duration-200">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
