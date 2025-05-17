@@ -80,7 +80,8 @@ const AnimatedLock = () => {
   );
 };
 
-export default function Home() {return (
+export default function Home() {
+  return (
     <div className="min-h-screen bg-cream-50 dark:bg-cream-50">
         <motion.nav
         initial={{ opacity: 0, y: -20 }}
@@ -298,12 +299,11 @@ export default function Home() {return (
       {/* Stats Section */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { number: "10K+", label: "Trusted Users" },
-              { number: "1M+", label: "Private Moments" },
-              { number: "50+", label: "Countries" },
-              { number: "99.9%", label: "Uptime" }
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">            {[
+              { number: "Coming Soon", label: "" },
+              { number: "100%", label: "Privacy Focused" },
+              { number: "24/7", label: "Support Ready" },
+              { number: "0%", label: "Data Tracking" }
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -334,48 +334,94 @@ export default function Home() {return (
             <p className="text-xl text-cream-700 dark:text-cream-700">
               See what people are saying about SocialFlow
             </p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          </motion.div>          {/* Organic flowing layout */}
+          <div className="relative max-w-5xl mx-auto">
             {[
               {
                 name: "Sarah Chen",
                 handle: "@sarahc",
                 content: "Finally, a platform where I can share my real moments with people who matter, without worrying about privacy.",
-                avatar: "SC"
+                avatar: "SC",
+                gradient: "from-pink-400 to-rose-500",
+                position: "top-0 left-0"
               },
               {
                 name: "Marcus Johnson",
-                handle: "@mjohnson",
+                handle: "@mjohnson", 
                 content: "The intimacy of sharing with just my close circle has brought back the joy of social media for me.",
-                avatar: "MJ"
+                avatar: "MJ",
+                gradient: "from-blue-400 to-indigo-500",
+                position: "top-12 right-0"
               },
               {
                 name: "Elena Rodriguez",
                 handle: "@elena_r",
                 content: "Love how SocialFlow protects my family moments while keeping us connected with loved ones.",
-                avatar: "ER"
+                avatar: "ER", 
+                gradient: "from-emerald-400 to-teal-500",
+                position: "top-64 left-1/2 transform -translate-x-1/2"
               }
             ].map((testimonial, index) => (
               <motion.div
                 key={testimonial.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}                viewport={{ once: true }}
-                className="bg-white dark:bg-cream-200 rounded-3xl p-8 shadow-minimalist border border-cream-200 dark:border-cream-300"
+                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  rotate: 2,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.2,
+                  ease: "easeOut"
+                }}
+                viewport={{ once: true }}
+                className={`absolute ${testimonial.position} w-80 group`}
+                style={{
+                  transform: index === 1 ? 'rotate(3deg)' : index === 2 ? 'rotate(-2deg)' : 'rotate(1deg)'
+                }}
               >
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-cream-300 dark:bg-cream-300 rounded-full flex items-center justify-center text-white dark:text-cream-900 font-semibold">
-                    {testimonial.avatar}
+                {/* Floating testimonial bubble */}
+                <div className="relative">
+                  {/* Main content bubble */}
+                  <div className="bg-white/90 dark:bg-cream-200/90 backdrop-blur-sm rounded-[2rem] p-6 shadow-lg border border-cream-200/50 dark:border-cream-300/50 group-hover:shadow-xl transition-all duration-300">
+                    {/* Quote content */}
+                    <p className="text-cream-700 dark:text-cream-700 leading-relaxed mb-4 font-light text-lg italic">
+                      "{testimonial.content}"
+                    </p>
+                    
+                    {/* Author */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-cream-900 dark:text-cream-900">
+                          {testimonial.name}
+                        </p>
+                        <p className="text-cream-500 dark:text-cream-500 text-sm">
+                          {testimonial.handle}
+                        </p>
+                      </div>
+                      
+                      {/* Floating avatar */}
+                      <motion.div 
+                        className={`w-12 h-12 bg-gradient-to-br ${testimonial.gradient} rounded-full flex items-center justify-center text-white font-bold shadow-lg`}
+                        whileHover={{ 
+                          scale: 1.1,
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        {testimonial.avatar}
+                      </motion.div>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="font-semibold text-cream-900 dark:text-cream-900">{testimonial.name}</p>
-                    <p className="text-cream-700 dark:text-cream-700">{testimonial.handle}</p>
-                  </div>
+                  
+                  {/* Subtle glow effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${testimonial.gradient} rounded-[2rem] opacity-0 group-hover:opacity-5 transition-opacity duration-300 -z-10`} />
                 </div>
-                <p className="text-cream-700 dark:text-cream-700 leading-relaxed">{testimonial.content}</p>
               </motion.div>
             ))}
+              {/* Spacer for absolute positioning */}
+            <div className="h-96 md:h-[30rem]" />
           </div>
         </div>
       </section>
