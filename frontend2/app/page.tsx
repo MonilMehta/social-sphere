@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ArrowRight, Users, MessageCircle, Shield, Heart, Lock, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import './globals.css';
 
@@ -105,12 +106,16 @@ export default function Home() {
               <a href="#privacy" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Privacy</a>
               <a href="#community" className="text-cream-700 dark:text-cream-700 hover:text-cream-900 dark:hover:text-cream-900 transition-colors font-medium">Community</a>
               <ThemeToggle />              <div className="flex items-center space-x-3">
-                <Button variant="outline" size="sm" className="border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-100 dark:hover:bg-cream-200">
-                  Login
-                </Button>
-                <Button size="sm" className="bg-cream-900 dark:bg-cream-300 text-white dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90">
-                  Sign Up
-                </Button>
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-100 dark:hover:bg-cream-200">
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="bg-cream-900 dark:bg-cream-300 text-white dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90">
+                    Sign Up
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -442,13 +447,17 @@ export default function Home() {
               Start sharing your private moments in a safe, meaningful environment 
               designed for authentic connections.
             </p>            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-cream-900 dark:bg-cream-300 text-white dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90 px-8 py-3 text-lg">
-                Sign Up Free
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button variant="outline" size="lg" className="border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-50 dark:hover:bg-cream-200 px-8 py-3 text-lg">
-                Login
-              </Button>
+              <Link href="/signup">
+                <Button size="lg" className="bg-cream-900 dark:bg-cream-300 text-white dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90 px-8 py-3 text-lg">
+                  Sign Up Free
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="outline" size="lg" className="border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-50 dark:hover:bg-cream-200 px-8 py-3 text-lg">
+                  Login
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
