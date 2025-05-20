@@ -189,9 +189,10 @@ export default function Login() {
                 whileTap={{ scale: 0.98 }}
               >                <Button
                   type="submit"
-                  className="w-full text-white py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-full py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
                   style={{
                     background: 'hsl(var(--color-primary))',
+                    color: 'hsl(var(--color-primary-foreground))'
                   }}
                 >
                   Sign In
