@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
+      maxlength: 500,
     },
     password: {
       type: String,
@@ -33,6 +34,36 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken: {
       type: String,
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    location: {
+      type: String,
+    },
+    website: {
+      type: String,
+    },
+    dateOfBirth: {
+      type: Date,
+    },
+    interests: [String],
+    isOnline: {
+      type: Boolean,
+      default: false,
+    },
+    lastSeen: {
+      type: Date,
+      default: Date.now,
+    },
+    searchScore: {
+      type: Number,
+      default: 0,
     },
   },
   {

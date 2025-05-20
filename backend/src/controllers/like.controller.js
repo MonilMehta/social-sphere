@@ -24,21 +24,10 @@ const togglePostLike = asyncHandler(async (req, res) => {
     post: post,
   };
   const hasUserLikedBefore = await Like.findOne(likeObject);
-
   let toggledLike;
   let message;
   if (!hasUserLikedBefore) {
     toggledLike = await Like.create(likeObject);
-
-    const likedVideo = await Like.aggregate([
-      {
-        $match: {
-          _id: toggledLike._id,
-        },
-      },
-    ]);
-
-    toggledLike = likedVideo;
     message = "Post liked successfully";
   } else {
     toggledLike = await Like.findOneAndDelete(likeObject);
@@ -65,21 +54,10 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     comment: comment,
   };
   const hasUserLikedBefore = await Like.findOne(likeObject);
-
   let toggledLike;
   let message;
   if (!hasUserLikedBefore) {
     toggledLike = await Like.create(likeObject);
-
-    const likedComment = await Like.aggregate([
-      {
-        $match: {
-          _id: toggledLike._id,
-        },
-      },
-    ]);
-
-    toggledLike = likedComment;
     message = "Comment liked successfully";
   } else {
     toggledLike = await Like.findOneAndDelete(likeObject);
@@ -106,21 +84,10 @@ const toggleReplyLike = asyncHandler(async (req, res) => {
     reply: reply,
   };
   const hasUserLikedBefore = await Like.findOne(likeObject);
-
   let toggledLike;
   let message;
   if (!hasUserLikedBefore) {
     toggledLike = await Like.create(likeObject);
-
-    const likedComment = await Like.aggregate([
-      {
-        $match: {
-          _id: toggledLike._id,
-        },
-      },
-    ]);
-
-    toggledLike = likedComment;
     message = "Reply liked successfully";
   } else {
     toggledLike = await Like.findOneAndDelete(likeObject);
