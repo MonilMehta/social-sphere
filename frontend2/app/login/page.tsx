@@ -17,7 +17,25 @@ export default function Login() {
     // Handle login logic here
     console.log('Login attempt:', { email, password });
   };  return (
-    <div className="min-h-screen" style={{ backgroundColor: 'hsl(var(--color-background))' }}>
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'hsl(var(--color-background))' }}>      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Single diagonal marquee - fixed vertical position */}
+        <motion.div
+          className="absolute text-[8vw] font-bold opacity-20 select-none whitespace-nowrap transform rotate-12 z-0"
+          style={{ 
+            color: '#94a3b8',
+            top: '30%',
+            left: '-100%'
+          }}
+          animate={{ 
+            x: ["-100%", "100vw"]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        >
+          🔒 SocialFlow ⚡ SocialFlow 🌍 SocialFlow 🔒 SocialFlow ⚡ SocialFlow 🌍 SocialFlow 
+        </motion.div>
+      </div>
+      
       {/* Navigation */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
@@ -42,9 +60,11 @@ export default function Login() {
                 />
               </div>
             </Link>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />              <Link href="/">
-                <Button variant="outline" size="sm" className="border-cream-300 text-cream-700 hover:bg-cream-100">
+            <div className="flex items-center space-x-4">              <ThemeToggle />              <Link href="/" className="cursor-pointer">
+                <Button variant="outline" size="sm" className="transition-all duration-300 hover:scale-105 hover:shadow-lg" style={{
+                  borderColor: 'hsl(var(--color-border))',
+                  color: 'hsl(var(--color-foreground))'
+                }}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Home
                 </Button>
@@ -52,31 +72,47 @@ export default function Login() {
             </div>
           </div>
         </div>
-      </motion.nav>
-
-      {/* Login Form */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-md mx-auto">          <motion.div
+      </motion.nav>      {/* Login Form */}
+      <section className="pt-32 pb-20 px-6 relative z-10">
+        <div className="max-w-md mx-auto">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="rounded-3xl p-8 shadow-minimalist-md border"
+            className="rounded-3xl p-8 shadow-2xl border backdrop-blur-sm"
             style={{ 
-              backgroundColor: 'hsl(var(--color-card))',
+              backgroundColor: 'hsl(var(--color-card) / 0.95)',
               borderColor: 'hsl(var(--color-border))' 
             }}
           >
             {/* Header */}
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-cream-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-3xl font-light mb-2" style={{ color: 'hsl(var(--color-foreground))' }}>
+            <div className="text-center mb-8">              <motion.div 
+                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+                style={{ 
+                  background: 'hsl(var(--color-primary))'
+                }}
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Lock className="w-8 h-8" style={{ color: 'hsl(var(--color-primary-foreground))' }} />
+              </motion.div>
+              <motion.h1 
+                className="text-3xl font-light mb-2" 
+                style={{ color: 'hsl(var(--color-foreground))' }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
                 Welcome back
-              </h1>
-              <p style={{ color: 'hsl(var(--color-muted-foreground))' }}>
+              </motion.h1>
+              <motion.p 
+                style={{ color: 'hsl(var(--color-muted-foreground))' }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
                 Sign in to your SocialFlow account
-              </p>
+              </motion.p>
             </div>
 
             {/* Form */}
@@ -86,13 +122,12 @@ export default function Login() {
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cream-500" />
-                  <input
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'hsl(var(--color-muted-foreground))' }} />                  <input
                     type="email"
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-cream-300 focus:border-transparent transition-colors"
+                    className="w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-cream-300 focus:border-transparent transition-all duration-300 hover:shadow-md focus:shadow-lg cursor-text"
                     style={{ 
                       backgroundColor: 'hsl(var(--color-muted))',
                       borderColor: 'hsl(var(--color-border))',
@@ -110,13 +145,12 @@ export default function Login() {
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cream-500" />
-                  <input
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'hsl(var(--color-muted-foreground))' }} />                  <input
                     type={showPassword ? "text" : "password"}
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-cream-300 focus:border-transparent transition-colors"
+                    className="w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-cream-300 focus:border-transparent transition-all duration-300 hover:shadow-md focus:shadow-lg cursor-text"
                     style={{ 
                       backgroundColor: 'hsl(var(--color-muted))',
                       borderColor: 'hsl(var(--color-border))',
@@ -125,35 +159,44 @@ export default function Login() {
                     placeholder="Enter your password"
                     required
                   />
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-cream-500 hover:text-cream-700 transition-colors"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 cursor-pointer hover:scale-110"
+                    style={{ color: 'hsl(var(--color-muted-foreground))' }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+                  </motion.button>
                 </div>
               </div>              {/* Remember me & Forgot password */}
               <div className="flex items-center justify-between">
-                <label className="flex items-center">
+                <label className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-cream-300 bg-cream-100 border-cream-200 rounded focus:ring-cream-300"
+                    className="w-4 h-4 text-cream-300 bg-cream-100 border-cream-200 rounded focus:ring-cream-300 cursor-pointer"
                   />
                   <span className="ml-2 text-sm" style={{ color: 'hsl(var(--color-muted-foreground))' }}>Remember me</span>
-                </label>
-                <a href="#" className="text-sm text-cream-300 hover:text-cream-400 transition-colors">
+                </label>                <a href="#" className="text-sm transition-all duration-300 cursor-pointer hover:underline" style={{ color: 'hsl(var(--color-primary))' }}>
                   Forgot password?
                 </a>
               </div>
 
               {/* Submit Button */}
-              <Button
-                type="submit"
-                className="w-full bg-cream-300 text-white hover:bg-cream-400 py-3 text-lg"
-              >
-                Sign In
-              </Button>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >                <Button
+                  type="submit"
+                  className="w-full text-white py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+                  style={{
+                    background: 'hsl(var(--color-primary))',
+                  }}
+                >
+                  Sign In
+                </Button>
+              </motion.div>
             </form>            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
@@ -167,14 +210,19 @@ export default function Login() {
                   Don't have an account?
                 </span>
               </div>
-            </div>
-
-            {/* Sign up link */}
+            </div>            {/* Sign up link */}
             <div className="text-center">
-              <Link href="/signup">
-                <Button variant="outline" className="w-full border-cream-200 text-cream-700 hover:bg-cream-100">
-                  Create an account
-                </Button>
+              <Link href="/signup" className="cursor-pointer">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >                  <Button variant="outline" className="w-full cursor-pointer transition-all duration-300 hover:shadow-md" style={{
+                    borderColor: 'hsl(var(--color-border))',
+                    color: 'hsl(var(--color-foreground))'
+                  }}>
+                    Create an account
+                  </Button>
+                </motion.div>
               </Link>
             </div>
           </motion.div>

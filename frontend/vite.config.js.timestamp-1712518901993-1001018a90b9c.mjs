@@ -1,3 +1,4 @@
+
 // vite.config.js
 import { defineConfig } from "file:///D:/Hackathon/social-sphere/frontend/node_modules/vite/dist/node/index.js";
 import react from "file:///D:/Hackathon/social-sphere/frontend/node_modules/@vitejs/plugin-react/dist/index.mjs";
