@@ -1,4 +1,11 @@
 import axios from 'axios';
+import { API_CONFIG } from './config';
+
+// Configure axios instance
+const api = axios.create({
+  baseURL: API_CONFIG.BASE_URL,
+  withCredentials: true,
+});
 
 export interface Post {
   _id: string;
@@ -47,19 +54,19 @@ export interface User {
 export const postsAPI = {
   // Get all public posts
   getAllPosts: async (): Promise<Post[]> => {
-    const response = await axios.get('/posts');
+    const response = await api.get(API_CONFIG.ENDPOINTS.POSTS);
     return response.data.data;
   },
 
   // Get post by ID
   getPostById: async (postId: string): Promise<Post> => {
-    const response = await axios.get(`/posts/${postId}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.POSTS}/${postId}`);
     return response.data.data[0];
   },
 
   // Create new post
   createPost: async (formData: FormData): Promise<Post> => {
-    const response = await axios.post('/posts', formData, {
+    const response = await api.post(API_CONFIG.ENDPOINTS.POSTS, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -69,18 +76,18 @@ export const postsAPI = {
 
   // Update post
   updatePost: async (postId: string, caption: string): Promise<Post> => {
-    const response = await axios.patch(`/posts/${postId}`, { caption });
+    const response = await api.patch(`${API_CONFIG.ENDPOINTS.POSTS}/${postId}`, { caption });
     return response.data.data;
   },
 
   // Delete post
   deletePost: async (postId: string): Promise<void> => {
-    await axios.delete(`/posts/${postId}`);
+    await api.delete(`${API_CONFIG.ENDPOINTS.POSTS}/${postId}`);
   },
 
   // Toggle post visibility
   togglePublicStatus: async (postId: string): Promise<Post> => {
-    const response = await axios.patch(`/posts/toggle/publish/${postId}`);
+    const response = await api.patch(`${API_CONFIG.ENDPOINTS.TOGGLE_POST_VISIBILITY}/${postId}`);
     return response.data.data;
   },
 };
@@ -89,19 +96,19 @@ export const postsAPI = {
 export const likesAPI = {
   // Toggle post like
   togglePostLike: async (postId: string): Promise<any> => {
-    const response = await axios.post(`/likes/toggle/p/${postId}`);
+    const response = await api.post(`${API_CONFIG.ENDPOINTS.TOGGLE_POST_LIKE}/${postId}`);
     return response.data.data;
   },
 
   // Toggle comment like
   toggleCommentLike: async (commentId: string): Promise<any> => {
-    const response = await axios.post(`/likes/toggle/c/${commentId}`);
+    const response = await api.post(`${API_CONFIG.ENDPOINTS.TOGGLE_COMMENT_LIKE}/${commentId}`);
     return response.data.data;
   },
 
   // Get liked posts
   getLikedPosts: async (): Promise<any[]> => {
-    const response = await axios.get('/likes/posts');
+    const response = await api.get(API_CONFIG.ENDPOINTS.LIKED_POSTS);
     return response.data.data.likedPosts;
   },
 };
@@ -110,25 +117,25 @@ export const likesAPI = {
 export const commentsAPI = {
   // Get comments for a post
   getComments: async (postId: string): Promise<Comment[]> => {
-    const response = await axios.get(`/comments/${postId}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.COMMENTS}/${postId}`);
     return response.data.data;
   },
 
   // Create comment
   createComment: async (postId: string, content: string): Promise<Comment> => {
-    const response = await axios.post(`/comments/${postId}`, { content });
+    const response = await api.post(`${API_CONFIG.ENDPOINTS.COMMENTS}/${postId}`, { content });
     return response.data.data;
   },
 
   // Update comment
   updateComment: async (commentId: string, content: string): Promise<Comment> => {
-    const response = await axios.patch(`/comments/${commentId}`, { content });
+    const response = await api.patch(`${API_CONFIG.ENDPOINTS.COMMENTS}/${commentId}`, { content });
     return response.data.data;
   },
 
   // Delete comment
   deleteComment: async (commentId: string): Promise<void> => {
-    await axios.delete(`/comments/${commentId}`);
+    await api.delete(`${API_CONFIG.ENDPOINTS.COMMENTS}/${commentId}`);
   },
 };
 
@@ -136,19 +143,19 @@ export const commentsAPI = {
 export const usersAPI = {
   // Get current user
   getCurrentUser: async (): Promise<User> => {
-    const response = await axios.get('/users/current-user');
+    const response = await api.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
     return response.data.data;
   },
 
   // Get user by username
   getUserByUsername: async (username: string): Promise<User> => {
-    const response = await axios.get(`/users/u/${username}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.USER_BY_USERNAME}/${username}`);
     return response.data.data;
   },
 
   // Update user profile
   updateProfile: async (formData: FormData): Promise<User> => {
-    const response = await axios.patch('/users/update-profile', formData, {
+    const response = await api.patch(API_CONFIG.ENDPOINTS.UPDATE_PROFILE, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -158,7 +165,7 @@ export const usersAPI = {
 
   // Search users
   searchUsers: async (query: string): Promise<User[]> => {
-    const response = await axios.get(`/users/search?q=${encodeURIComponent(query)}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.SEARCH_USERS}?q=${encodeURIComponent(query)}`);
     return response.data.data;
   },
 };
@@ -167,25 +174,25 @@ export const usersAPI = {
 export const followAPI = {
   // Follow user
   followUser: async (userId: string): Promise<any> => {
-    const response = await axios.post(`/follows/${userId}`);
+    const response = await api.post(`${API_CONFIG.ENDPOINTS.FOLLOWS}/${userId}`);
     return response.data.data;
   },
 
   // Unfollow user
   unfollowUser: async (userId: string): Promise<any> => {
-    const response = await axios.delete(`/follows/unfollow/${userId}`);
+    const response = await api.delete(`${API_CONFIG.ENDPOINTS.UNFOLLOW}/${userId}`);
     return response.data.data;
   },
 
   // Get user followers
   getFollowers: async (userId: string): Promise<User[]> => {
-    const response = await axios.get(`/follows/followers/${userId}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.FOLLOWERS}/${userId}`);
     return response.data.data.followers;
   },
 
   // Get user following
   getFollowing: async (userId: string): Promise<User[]> => {
-    const response = await axios.get(`/follows/following/${userId}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.FOLLOWING}/${userId}`);
     return response.data.data.following;
   },
 };

@@ -1,22 +1,71 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Lock, Mail, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
+  const { login, isAuthenticated, loading } = useAuth();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      router.push('/home');
+    }
+  }, [isAuthenticated, loading, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', { email, password });
-  };  return (
+    
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const result = await login(email, password);
+      
+      if (result.success) {
+        setSuccess('Login successful! Redirecting...');
+        // Redirect will happen automatically via useEffect
+        setTimeout(() => {
+          router.push('/home');
+        }, 1000);
+      } else {
+        setError(result.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Show loading spinner while checking auth status
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'hsl(var(--color-background))' }}>
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'hsl(var(--color-primary))' }} />
+      </div>
+    );
+  }return (
     <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'hsl(var(--color-background))' }}>      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Single diagonal marquee - fixed vertical position */}
@@ -113,10 +162,38 @@ export default function Login() {
               >
                 Sign in to your SocialFlow account
               </motion.p>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">              {/* Email */}
+            </div>            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Error/Success Messages */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-lg border text-sm"
+                  style={{
+                    backgroundColor: 'hsl(var(--color-destructive) / 0.1)',
+                    borderColor: 'hsl(var(--color-destructive) / 0.3)',
+                    color: 'hsl(var(--color-destructive))'
+                  }}
+                >
+                  {error}
+                </motion.div>
+              )}
+              
+              {success && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-lg border text-sm"
+                  style={{
+                    backgroundColor: 'hsl(var(--color-primary) / 0.1)',
+                    borderColor: 'hsl(var(--color-primary) / 0.3)',
+                    color: 'hsl(var(--color-primary))'
+                  }}
+                >
+                  {success}
+                </motion.div>
+              )}{/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium" style={{ color: 'hsl(var(--color-foreground))' }}>
                   Email
@@ -181,21 +258,28 @@ export default function Login() {
                 </label>                <a href="#" className="text-sm transition-all duration-300 cursor-pointer hover:underline" style={{ color: 'hsl(var(--color-primary))' }}>
                   Forgot password?
                 </a>
-              </div>
-
-              {/* Submit Button */}
+              </div>              {/* Submit Button */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >                <Button
+                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                whileTap={{ scale: isLoading ? 1 : 0.98 }}
+              >
+                <Button
                   type="submit"
-                  className="w-full py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+                  disabled={isLoading}
+                  className="w-full py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background: 'hsl(var(--color-primary))',
                     color: 'hsl(var(--color-primary-foreground))'
                   }}
                 >
-                  Sign In
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
               </motion.div>
             </form>            {/* Divider */}
