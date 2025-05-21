@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-const SignupPage: React.FC = () => {
+export default function SignupPage(): React.JSX.Element {
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
@@ -448,6 +448,4 @@ const SignupPage: React.FC = () => {
       </section>
     </div>
   );
-};
-
-export default SignupPage;
+}
