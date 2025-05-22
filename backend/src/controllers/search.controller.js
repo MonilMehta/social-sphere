@@ -162,11 +162,10 @@ const getRecommendedUsers = asyncHandler(async (req, res) => {
                   },
                 ],
                 as: "mutualConnection",
-              },
-            },
+              },            },
             {
               $match: {
-                mutualConnection: { $size: { $gt: 0 } },
+                $expr: { $gt: [{ $size: "$mutualConnection" }, 0] },
               },
             },
           ],
