@@ -10,7 +10,7 @@ import { postsAPI, likesAPI, commentsAPI, usersAPI, followAPI, Post, Comment, Us
 interface Chat {
   _id: string;
   user: ApiUser;
-  lastMessage: string;
+  lastMessage: string | { content: string };
   timestamp: string;
   unreadCount: number;
 }
@@ -25,14 +25,14 @@ const suggestedUsers: Partial<ApiUser>[] = [
 const recentChats: Chat[] = [
   {
     _id: '1',
-    user: { _id: '6', name: 'Mike Davis', username: 'mike_d', email: 'mike@example.com', profilepic: '/4.jpg', followers: 0, following: 0 },
+    user: { _id: '6', name: 'Mike Davis', username: 'mike_d', email: 'mike@example.com', profilepic: '/4.jpg', isVerified: false, isPrivate: false },
     lastMessage: 'Hey! How are you doing?',
     timestamp: '2 mins ago',
     unreadCount: 2
   },
   {
     _id: '2',
-    user: { _id: '7', name: 'Sarah Lee', username: 'sarah_lee', email: 'sarah@example.com', profilepic: '/1.jpg', followers: 0, following: 0 },
+    user: { _id: '7', name: 'Sarah Lee', username: 'sarah_lee', email: 'sarah@example.com', profilepic: '/1.jpg', isVerified: false, isPrivate: false },
     lastMessage: 'Thanks for the help!',
     timestamp: '1 hour ago',
     unreadCount: 0
@@ -286,10 +286,9 @@ const PostCard = ({ post, onUpdate }: { post: Post; onUpdate: (updatedPost: Post
 };
 
 // Right Sidebar Component
-const RightSidebar = () => {
-  const handleFollowUser = async (userId: string) => {
+const RightSidebar = () => {  const handleFollowUser = async (userId: string) => {
     try {
-      await followAPI.followUser(userId);
+      await followAPI.toggleFollow(userId);
       // TODO: Update UI to show followed state
     } catch (error) {
       console.error('Error following user:', error);
@@ -362,10 +361,13 @@ const RightSidebar = () => {
                     {chat.unreadCount}
                   </span>
                 )}
-              </div>
-              <div className="flex-1 min-w-0">
+              </div>              <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm text-gray-900 dark:text-white truncate">{chat.user.name}</p>
-                <p className="text-xs text-gray-500 truncate">{chat.lastMessage}</p>
+                <p className="text-xs text-gray-500 truncate">
+                  {typeof chat.lastMessage === 'string' 
+                    ? chat.lastMessage 
+                    : chat.lastMessage?.content || 'No messages yet'}
+                </p>
               </div>
               <span className="text-xs text-gray-400">{chat.timestamp}</span>
             </div>

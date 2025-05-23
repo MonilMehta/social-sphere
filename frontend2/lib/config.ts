@@ -10,32 +10,53 @@ export const API_CONFIG = {
     // Auth endpoints
     LOGIN: '/users/login',
     REGISTER: '/users/register',
-    CURRENT_USER: '/users/current-user',
+    CURRENT_USER: '/users/me',
     REFRESH_TOKEN: '/users/refresh-token',
     
     // User endpoints
     USERS: '/users',
-    USER_BY_USERNAME: '/users/u',
-    UPDATE_PROFILE: '/users/update-profile',
-    SEARCH_USERS: '/users/search',
+    USER_BY_USERNAME: '/users/profile',
+    UPDATE_PROFILE: '/users/update-account',
+    RANDOM_USERS: '/users/random-users',
     
     // Posts endpoints
     POSTS: '/posts',
-    TOGGLE_POST_VISIBILITY: '/posts/toggle/publish',
+    TOGGLE_POST_VISIBILITY: '/posts/toggle',
     
     // Likes endpoints
-    TOGGLE_POST_LIKE: '/likes/toggle/p',
-    TOGGLE_COMMENT_LIKE: '/likes/toggle/c',
+    TOGGLE_POST_LIKE: '/likes/p',
+    TOGGLE_COMMENT_LIKE: '/likes/c',
     LIKED_POSTS: '/likes/posts',
     
     // Comments endpoints
-    COMMENTS: '/comments',
+    COMMENTS: '/comments/p',
+    
+    // Reply endpoints
+    REPLIES: '/replies/c',
+    REPLY_BY_ID: '/replies/r',
     
     // Follow endpoints
-    FOLLOWS: '/follows',
-    UNFOLLOW: '/follows/unfollow',
+    FOLLOWS: '/follows/toggle',
     FOLLOWERS: '/follows/followers',
-    FOLLOWING: '/follows/following',
+    FOLLOWING: '/follows/followings',
+    
+    // Search endpoints
+    GLOBAL_SEARCH: '/search/global',
+    SEARCH_USERS: '/search/users',
+    RECOMMENDED_USERS: '/search/users/recommended',
+    TRENDING_HASHTAGS: '/search/hashtags/trending',
+    
+    // Chat endpoints
+    CHATS: '/chats',
+    CHAT_BY_ID: '/chats',
+    CHAT_PARTICIPANTS: '/chats',
+    LEAVE_CHAT: '/chats',
+    
+    // Message endpoints
+    MESSAGES: '/messages',
+    CHAT_MESSAGES: '/messages/chat',
+    UNREAD_COUNT: '/messages/unread/count',
+    SEARCH_MESSAGES: '/messages/search',
   },
   
   // Cookie configuration
