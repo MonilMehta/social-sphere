@@ -252,10 +252,15 @@ export const usersAPI = {
     });
     return response.data.data;
   },
-
   // Get random users
   getRandomUsers: async (): Promise<User[]> => {
     const response = await api.get(API_CONFIG.ENDPOINTS.RANDOM_USERS);
+    return response.data.data;
+  },
+
+  // Get user profile by username
+  getUserProfile: async (username: string): Promise<any> => {
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.USER_BY_USERNAME}/${username}`);
     return response.data.data;
   },
 };

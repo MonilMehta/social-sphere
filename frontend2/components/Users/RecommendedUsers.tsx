@@ -43,7 +43,7 @@ export default function RecommendedUsers() {
 
   if (loading) {
     return (
-      <div className="p-6 rounded-lg border" style={{ 
+      <div className="p-2 rounded-lg border" style={{ 
         backgroundColor: 'hsl(var(--color-card))',
         borderColor: 'hsl(var(--color-border))' 
       }}>
@@ -75,7 +75,7 @@ export default function RecommendedUsers() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="p-6 rounded-lg border"
+      className="py-6 px-4 rounded-lg border"
       style={{ 
         backgroundColor: 'hsl(var(--color-card))',
         borderColor: 'hsl(var(--color-border))' 
@@ -94,7 +94,6 @@ export default function RecommendedUsers() {
           onClick={handleRefresh}
           disabled={refreshing}
           variant="outline"
-          size="sm"
         >
           <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
         </Button>

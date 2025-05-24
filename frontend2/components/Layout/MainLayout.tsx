@@ -33,7 +33,7 @@ export function MainLayout() {
         isSearchVisible={isMobileSearchVisible} 
       />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">        {/* Desktop Layout */}
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-6">        {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-12 lg:gap-6">
           {/* Left Sidebar */}
           <div className="lg:col-span-3 space-y-6">
