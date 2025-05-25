@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Share, MoreHorizontal, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, onLike, onComment }: PostCardProps) {
+  const router = useRouter();
   const [isLiked, setIsLiked] = useState(post.hasUserLikedPost);
   const [likesCount, setLikesCount] = useState(post.numberOfLikes);
   const [loading, setLoading] = useState(false);
@@ -35,6 +37,34 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
 
   const handleComment = () => {
     onComment?.(post._id);
+  };
+
+  const handleHashtagClick = (hashtag: string) => {
+    const searchQuery = hashtag.startsWith('#') ? hashtag : `#${hashtag}`;
+    const params = new URLSearchParams({
+      q: searchQuery,
+      type: 'posts'
+    });
+    router.push(`/search?${params.toString()}`);
+  };
+
+  const renderCaptionWithHashtags = (caption: string) => {
+    const parts = caption.split(/(#\w+)/g);
+    
+    return parts.map((part, index) => {
+      if (part.match(/^#\w+$/)) {
+        return (
+          <button
+            key={index}
+            onClick={() => handleHashtagClick(part)}
+            className="text-blue-500 hover:text-blue-600 hover:underline font-medium"
+          >
+            {part}
+          </button>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
   };
 
   return (
@@ -77,11 +107,10 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
         </Button>
       </div>
 
-      {/* Post Content */}
-      <div className="mb-3">
-        <p className="text-sm leading-relaxed" style={{ color: 'hsl(var(--color-foreground))' }}>
-          {post.caption}
-        </p>
+      {/* Post Content */}      <div className="mb-3">
+        <div className="text-sm leading-relaxed" style={{ color: 'hsl(var(--color-foreground))' }}>
+          {renderCaptionWithHashtags(post.caption)}
+        </div>
         
         {/* Media Files */}
         {post.mediaFile && post.mediaFile.length > 0 && (
