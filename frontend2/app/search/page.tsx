@@ -89,12 +89,12 @@ export default function SearchPage() {
       handleSearch();
     }
   };
-
-  const handleTabChange = (newTab: 'all' | 'users' | 'posts') => {
-    setActiveTab(newTab);
+  const handleTabChange = (newTab: string) => {
+    const validTab = newTab as 'all' | 'users' | 'posts';
+    setActiveTab(validTab);
     setCurrentPage(1);
     if (query.trim()) {
-      handleSearch(query, newTab, 1);
+      handleSearch(query, validTab, 1);
     }
   };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { searchAPI, TrendingHashtag } from '@/lib/api';
 import { Hash, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,9 +15,11 @@ interface TrendingHashtagsProps {
 }
 
 export function TrendingHashtags({ className, limit = 10 }: TrendingHashtagsProps) {
+  const router = useRouter();
   const [hashtags, setHashtags] = useState<TrendingHashtag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchTrendingHashtags = async () => {
       try {
@@ -34,6 +37,15 @@ export function TrendingHashtags({ className, limit = 10 }: TrendingHashtagsProp
 
     fetchTrendingHashtags();
   }, [limit]);
+
+  const handleHashtagClick = (hashtag: string) => {
+    const searchQuery = hashtag.startsWith('#') ? hashtag : `#${hashtag}`;
+    const params = new URLSearchParams({
+      q: searchQuery,
+      type: 'posts'
+    });
+    router.push(`/search?${params.toString()}`);
+  };
 
   const formatCount = (count: number): string => {
     if (count >= 1000000) {
@@ -84,14 +96,14 @@ export function TrendingHashtags({ className, limit = 10 }: TrendingHashtagsProp
           <p className="text-sm text-muted-foreground text-center py-4">
             No trending hashtags found
           </p>
-        ) : (
-          hashtags.map((hashtag, index) => (
-            <motion.div
+        ) : (          hashtags.map((hashtag, index) => (
+            <motion.button
               key={hashtag.hashtag}
+              onClick={() => handleHashtagClick(hashtag.hashtag)}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
+              className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group text-left"
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -105,11 +117,10 @@ export function TrendingHashtags({ className, limit = 10 }: TrendingHashtagsProp
                     {formatCount(hashtag.count)} posts
                   </p>
                 </div>
-              </div>
-              <Badge variant="secondary" className="text-xs">
+              </div>              <Badge variant="secondary" className="text-xs">
                 #{index + 1}
               </Badge>
-            </motion.div>
+            </motion.button>
           ))
         )}
       </CardContent>
