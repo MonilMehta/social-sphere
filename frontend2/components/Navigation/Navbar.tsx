@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import  SearchComponent  from '@/components/Search/SearchComponent';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Bell, MessageCircle, User, LogOut, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -49,15 +50,14 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b backdrop-blur-md bg-background/95 support-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+        <div className="flex justify-between items-center h-16">          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center"
           >
-            <h1 className="text-2xl font-bold text-primary">
-              SocialSphere
+            <h1 className="text-3xl font-bold text-primary tracking-tight">
+              SocialFlow
             </h1>
           </motion.div>
 
@@ -86,9 +86,7 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
                 )}
               </AnimatePresence>
             </div>
-          </div>
-
-          {/* Right side actions */}
+          </div>          {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {/* Mobile Search Toggle */}
             <Button
@@ -99,6 +97,9 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
             >
               <Search className="w-5 h-5" />
             </Button>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Notifications */}
             <Button variant="ghost" size="sm" className="relative">

@@ -345,28 +345,27 @@ export const chatAPI = {
     const response = await api.post(API_CONFIG.ENDPOINTS.CHATS, payload);
     return response.data.data;
   },
-
   // Get chat by ID
   getChatById: async (chatId: string): Promise<Chat> => {
-    const response = await api.get(`${API_CONFIG.ENDPOINTS.CHAT_BY_ID}/${chatId}`);
+    const response = await api.get(`${API_CONFIG.ENDPOINTS.CHATS}/${chatId}`);
     return response.data.data;
   },
 
-  // Add participants to group chat
-  addParticipants: async (chatId: string, participantIds: string[]): Promise<Chat> => {
-    const response = await api.post(`${API_CONFIG.ENDPOINTS.CHAT_PARTICIPANTS}/${chatId}/participants`, { participantIds });
+  // Add participant to group chat
+  addParticipant: async (chatId: string, userId: string): Promise<Chat> => {
+    const response = await api.post(`${API_CONFIG.ENDPOINTS.CHATS}/${chatId}/participants`, { userId });
     return response.data.data;
   },
 
   // Remove participant from group chat
   removeParticipant: async (chatId: string, participantId: string): Promise<Chat> => {
-    const response = await api.delete(`${API_CONFIG.ENDPOINTS.CHAT_PARTICIPANTS}/${chatId}/participants/${participantId}`);
+    const response = await api.delete(`${API_CONFIG.ENDPOINTS.CHATS}/${chatId}/participants/${participantId}`);
     return response.data.data;
   },
 
   // Leave group chat
   leaveChat: async (chatId: string): Promise<void> => {
-    await api.post(`${API_CONFIG.ENDPOINTS.LEAVE_CHAT}/${chatId}/leave`);
+    await api.post(`${API_CONFIG.ENDPOINTS.CHATS}/${chatId}/leave`);
   },
 
   // Delete chat
@@ -379,6 +378,7 @@ export const chatAPI = {
 export const messagesAPI = {
   // Send message
   sendMessage: async (chatId: string, content: string, messageType = 'text', replyTo?: string, attachments?: FileList): Promise<Message> => {
+    // For simple text messages, use form data to match API expectations
     const formData = new FormData();
     formData.append('chatId', chatId);
     formData.append('content', content);
@@ -401,6 +401,11 @@ export const messagesAPI = {
   getChatMessages: async (chatId: string, page = 1, limit = 50): Promise<{ messages: Message[]; pagination: PaginationInfo }> => {
     const response = await api.get(`${API_CONFIG.ENDPOINTS.CHAT_MESSAGES}/${chatId}?page=${page}&limit=${limit}`);
     return response.data.data;
+  },
+
+  // Mark messages as read
+  markAsRead: async (chatId: string): Promise<void> => {
+    await api.post(`${API_CONFIG.ENDPOINTS.MESSAGES}/chat/${chatId}/read`);
   },
 
   // Edit message
