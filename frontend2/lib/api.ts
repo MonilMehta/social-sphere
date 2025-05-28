@@ -63,6 +63,8 @@ export interface User {
   email: string;
   profilepic?: string;
   bio?: string;
+  location?: string;
+  interests?: string | string[];
   isVerified: boolean;
   isPrivate: boolean;
   followerCount?: number;
@@ -242,7 +244,6 @@ export const usersAPI = {
     const response = await api.get(`${API_CONFIG.ENDPOINTS.USER_BY_USERNAME}/${username}`);
     return response.data.data;
   },
-
   // Update user profile
   updateProfile: async (formData: FormData): Promise<User> => {
     const response = await api.patch(API_CONFIG.ENDPOINTS.UPDATE_PROFILE, formData, {
@@ -250,6 +251,12 @@ export const usersAPI = {
         'Content-Type': 'multipart/form-data',
       },
     });
+    return response.data.data;
+  },
+
+  // Change password
+  changePassword: async (data: { oldPassword: string; newPassword: string }): Promise<void> => {
+    const response = await api.post(API_CONFIG.ENDPOINTS.CHANGE_PASSWORD, data);
     return response.data.data;
   },
   // Get random users
@@ -423,11 +430,51 @@ export const messagesAPI = {
   getUnreadCount: async (): Promise<{ totalUnread: number; chatsWithUnread: number }> => {
     const response = await api.get(API_CONFIG.ENDPOINTS.UNREAD_COUNT);
     return response.data.data;
-  },
-
-  // Search messages
+  },  // Search messages
   searchMessages: async (chatId: string, query: string, page = 1, limit = 20): Promise<{ messages: Message[]; pagination: PaginationInfo }> => {
     const response = await api.get(`${API_CONFIG.ENDPOINTS.SEARCH_MESSAGES}?chatId=${chatId}&query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
     return response.data.data;
+  },
+};
+
+// Image Upload Utility
+export const imageAPI = {
+  // Upload single image
+  uploadImage: async (file: File, folder: string = 'posts'): Promise<{ url: string; key: string; bucket: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to upload image');
+    }
+
+    const result = await response.json();
+    return result.data;
+  },
+
+  // Upload multiple images
+  uploadMultipleImages: async (files: File[], folder: string = 'posts'): Promise<string[]> => {
+    const uploadPromises = files.map(file => imageAPI.uploadImage(file, folder));
+    const results = await Promise.all(uploadPromises);
+    return results.map(result => result.url);
+  },
+
+  // Delete image
+  deleteImage: async (key: string): Promise<void> => {
+    const response = await fetch(`/api/upload?key=${encodeURIComponent(key)}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete image');
+    }
   },
 };

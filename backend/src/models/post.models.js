@@ -15,6 +15,12 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    hashtags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
     isPublic: {
       type: Boolean,
       default: true,

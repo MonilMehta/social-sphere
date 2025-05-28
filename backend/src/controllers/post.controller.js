@@ -7,13 +7,27 @@ import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 
 const createPost = asyncHandler(async (req, res) => {
-  const { caption } = req?.body;
+  const { caption, images, hashtags, isPublic } = req?.body;
   if (!caption || caption.trim() === "") {
     throw new ApiError(400, "Caption is empty");
   }
 
-  const uploadedFiles = [];
-  if (req.files && !(req.files.length === 0)) {
+  let uploadedFiles = [];
+  
+  // Check if images are provided as URLs (from frontend AWS upload)
+  if (images) {
+    try {
+      const imageUrls = typeof images === 'string' ? JSON.parse(images) : images;
+      if (Array.isArray(imageUrls)) {
+        uploadedFiles = imageUrls;
+      }
+    } catch (error) {
+      console.error('Error parsing images:', error);
+    }
+  }
+  
+  // Fallback: Handle file uploads via multer (if any files are still uploaded via backend)
+  if (req.files && req.files.length > 0) {
     for (const file of req.files) {
       if (file?.path) {
         const result = await uploadFileOnCloudinary(file.path);
@@ -25,10 +39,22 @@ const createPost = asyncHandler(async (req, res) => {
     }
   }
 
+  // Parse hashtags if provided
+  let parsedHashtags = [];
+  if (hashtags) {
+    try {
+      parsedHashtags = typeof hashtags === 'string' ? JSON.parse(hashtags) : hashtags;
+    } catch (error) {
+      console.error('Error parsing hashtags:', error);
+    }
+  }
+
   const post = await Post.create({
     mediaFile: uploadedFiles,
     postedBy: req.user?._id,
     caption,
+    hashtags: parsedHashtags,
+    isPublic: isPublic !== undefined ? isPublic === 'true' || isPublic === true : true,
   });
 
   if (!post) {

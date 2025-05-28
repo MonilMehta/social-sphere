@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { postsAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -23,14 +23,22 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
   const [isPublic, setIsPublic] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);  const [uploadingImages, setUploadingImages] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviewUrls]);
 
   const extractHashtags = (text: string): string[] => {
     const hashtagRegex = /#[\w]+/g;
     const matches = text.match(hashtagRegex);
     return matches ? matches.map(tag => tag.substring(1)) : [];
   };
-
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setContent(newContent);
@@ -39,13 +47,106 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
     const extractedHashtags = extractHashtags(newContent);
     setHashtags(extractedHashtags);
   };
-  const handleSubmit = async (e: React.FormEvent) => {
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate files
+    const validFiles = files.filter(file => {
+      if (!file.type.startsWith('image/')) {
+        setError('Only image files are allowed');
+        return false;
+      }
+      if (file.size > 5 * 1024 * 1024) { // 5MB
+        setError('Each image must be less than 5MB');
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    // Limit to 4 images total
+    const remainingSlots = 4 - selectedImages.length;
+    const filesToAdd = validFiles.slice(0, remainingSlots);
+
+    if (filesToAdd.length < validFiles.length) {
+      setError('Maximum 4 images allowed per post');
+    }
+
+    // Update selected images
+    setSelectedImages(prev => [...prev, ...filesToAdd]);
+
+    // Create preview URLs
+    const newPreviewUrls = filesToAdd.map(file => URL.createObjectURL(file));
+    setImagePreviewUrls(prev => [...prev, ...newPreviewUrls]);
+
+    // Clear error if files were added successfully
+    if (filesToAdd.length > 0) {
+      setError(null);
+    }
+
+    // Clear the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const removeImage = (index: number) => {
+    // Revoke the URL to prevent memory leaks
+    URL.revokeObjectURL(imagePreviewUrls[index]);
+    
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };  const uploadImages = async (): Promise<string[]> => {
+    if (selectedImages.length === 0) return [];
+
+    setUploadingImages(true);
+    
+    try {
+      // Create a single FormData with all images
+      const formData = new FormData();
+      
+      // Append all images with the same field name (handled by multer.array())
+      selectedImages.forEach((file, index) => {
+        formData.append('images', file); // Use 'images' field name for multiple files
+      });
+      
+      formData.append('folder', 'posts');
+
+      // Make a single API call to upload all images
+      const response = await fetch('/api/upload/multiple', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to upload images');
+      }
+
+      const result = await response.json();
+      return result.data.urls; // Expecting array of URLs
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      throw error;
+    } finally {
+      setUploadingImages(false);
+    }
+  };const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim() || isSubmitting) return;
 
     try {
       setIsSubmitting(true);
       setError(null);
+
+      // Upload images first if any are selected
+      let imageUrls: string[] = [];
+      if (selectedImages.length > 0) {
+        imageUrls = await uploadImages();
+      }
 
       // Create FormData for the API
       const formData = new FormData();
@@ -57,6 +158,11 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
         formData.append('hashtags', JSON.stringify(hashtags));
       }
 
+      // Add image URLs if any were uploaded
+      if (imageUrls.length > 0) {
+        formData.append('images', JSON.stringify(imageUrls));
+      }
+
       await postsAPI.createPost(formData);
 
       // Reset form
@@ -64,11 +170,16 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
       setHashtags([]);
       setIsPublic(true);
       
+      // Clear images and their previews
+      imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
+      setSelectedImages([]);
+      setImagePreviewUrls([]);
+      
       // Notify parent component
       onPostCreated?.();
     } catch (err: any) {
       console.error('Error creating post:', err);
-      setError(err.response?.data?.message || 'Failed to create post');
+      setError(err.message || err.response?.data?.message || 'Failed to create post');
     } finally {
       setIsSubmitting(false);
     }
@@ -126,9 +237,7 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
                 maxLength={characterLimit}
               />
             </div>
-          </div>
-
-          {/* Hashtags Display */}
+          </div>          {/* Hashtags Display */}
           <AnimatePresence>
             {hashtags.length > 0 && (
               <motion.div
@@ -163,6 +272,49 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
             )}
           </AnimatePresence>
 
+          {/* Image Previews */}
+          <AnimatePresence>
+            {imagePreviewUrls.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-muted/30"
+              >
+                {imagePreviewUrls.map((url, index) => (
+                  <motion.div
+                    key={url}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="relative aspect-square rounded-lg overflow-hidden group"
+                  >
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-2 right-2 w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => removeImage(index)}
+                      disabled={uploadingImages}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                    {uploadingImages && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 text-white animate-spin" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Error Message */}
           <AnimatePresence>
             {error && (
@@ -178,27 +330,28 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
           </AnimatePresence>
 
           {/* Bottom Actions */}
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-between pt-4 border-t">            <div className="flex items-center space-x-4">
               {/* Image Upload Button */}
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isSubmitting}
+                disabled={isSubmitting || uploadingImages || selectedImages.length >= 4}
+                className="flex items-center space-x-2"
               >
                 <Image className="w-4 h-4" />
+                <span className="text-xs">
+                  {selectedImages.length}/4
+                </span>
               </Button>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
+                multiple
                 className="hidden"
-                onChange={(e) => {
-                  // Handle image upload logic here
-                  console.log('File selected:', e.target.files?.[0]);
-                }}
+                onChange={handleImageSelect}
               />
 
               {/* Character Count */}
@@ -239,18 +392,16 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
                   </svg>
                 </div>
               </div>
-            </div>
-
-            {/* Submit Button */}
+            </div>            {/* Submit Button */}
             <Button
               type="submit"
-              disabled={!content.trim() || isSubmitting || remainingChars < 0}
+              disabled={!content.trim() || isSubmitting || uploadingImages || remainingChars < 0}
               className="min-w-[80px]"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Posting...
+                  {uploadingImages ? 'Uploading...' : 'Posting...'}
                 </>
               ) : (
                 'Post'

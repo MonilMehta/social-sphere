@@ -12,11 +12,11 @@ export const API_CONFIG = {
     REGISTER: '/users/register',
     CURRENT_USER: '/users/me',
     REFRESH_TOKEN: '/users/refresh-token',
-    
-    // User endpoints
+      // User endpoints
     USERS: '/users',
     USER_BY_USERNAME: '/users/profile',
     UPDATE_PROFILE: '/users/update-account',
+    CHANGE_PASSWORD: '/users/change-pass',
     RANDOM_USERS: '/users/random-users',
     
     // Posts endpoints
