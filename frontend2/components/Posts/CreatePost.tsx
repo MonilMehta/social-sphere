@@ -161,19 +161,23 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
       // Add image URLs if any were uploaded
       if (imageUrls.length > 0) {
         formData.append('images', JSON.stringify(imageUrls));
-      }
+      }      await postsAPI.createPost(formData);
 
-      await postsAPI.createPost(formData);
-
-      // Reset form
+      // Reset form completely
       setContent('');
       setHashtags([]);
       setIsPublic(true);
+      setError(null);
       
       // Clear images and their previews
       imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
       setSelectedImages([]);
       setImagePreviewUrls([]);
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       
       // Notify parent component
       onPostCreated?.();
@@ -270,47 +274,60 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
                 ))}
               </motion.div>
             )}
-          </AnimatePresence>
-
-          {/* Image Previews */}
+          </AnimatePresence>          {/* Image Previews - Carousel */}
           <AnimatePresence>
             {imagePreviewUrls.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-muted/30"
+                className="p-3 border rounded-lg bg-muted/30"
               >
-                {imagePreviewUrls.map((url, index) => (
-                  <motion.div
-                    key={url}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="relative aspect-square rounded-lg overflow-hidden group"
-                  >
-                    <img
-                      src={url}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-2 right-2 w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeImage(index)}
-                      disabled={uploadingImages}
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                    {uploadingImages && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <Loader2 className="w-6 h-6 text-white animate-spin" />
+                <div className="relative">                  <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide">
+                    {imagePreviewUrls.map((url, index) => (
+                      <motion.div
+                        key={url}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="relative flex-shrink-0 w-40 h-32 rounded-lg overflow-hidden group"
+                      >
+                        <img
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-1 right-1 w-5 h-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => removeImage(index)}
+                          disabled={uploadingImages}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                        {uploadingImages && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <Loader2 className="w-4 h-4 text-white animate-spin" />
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                  {imagePreviewUrls.length > 2 && (
+                    <div className="flex justify-center mt-2">
+                      <div className="flex space-x-1">
+                        {imagePreviewUrls.map((_, index) => (
+                          <div
+                            key={index}
+                            className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"
+                          />
+                        ))}
                       </div>
-                    )}
-                  </motion.div>
-                ))}
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
