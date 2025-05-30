@@ -40,12 +40,10 @@ export default function RecommendedUsers() {
     // Optionally update local state or refresh recommendations
     console.log('User followed:', userId);
   };
-
   if (loading) {
     return (
-      <div className="p-2 rounded-lg border" style={{ 
-        backgroundColor: 'hsl(var(--color-card))',
-        borderColor: 'hsl(var(--color-border))' 
+      <div className="p-2 rounded-lg" style={{ 
+        backgroundColor: 'hsl(var(--color-card))'
       }}>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'hsl(var(--color-primary))' }} />
@@ -56,9 +54,8 @@ export default function RecommendedUsers() {
 
   if (error) {
     return (
-      <div className="p-6 rounded-lg border" style={{ 
-        backgroundColor: 'hsl(var(--color-card))',
-        borderColor: 'hsl(var(--color-border))' 
+      <div className="p-6 rounded-lg" style={{ 
+        backgroundColor: 'hsl(var(--color-card))'
       }}>
         <div className="text-center py-4">
           <p className="text-red-500 mb-4">{error}</p>
@@ -70,15 +67,13 @@ export default function RecommendedUsers() {
     );
   }
 
-  return (
-    <motion.div
+  return (    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="py-6 px-4 rounded-lg border"
+      className="py-6 px-4 rounded-lg"
       style={{ 
-        backgroundColor: 'hsl(var(--color-card))',
-        borderColor: 'hsl(var(--color-border))' 
+        backgroundColor: 'hsl(var(--color-card))'
       }}
     >
       {/* Header */}

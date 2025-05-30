@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Share2, Download, MoreHorizontal, User, Flag, X, Send } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Download, MoreHorizontal, User, Flag, X, Send, ChevronLeft, ChevronRight } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,82 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Post, likesAPI, commentsAPI, Comment } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
+
+interface ImageCarouselProps {
+  images: string[];
+}
+
+function ImageCarousel({ images }: ImageCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <div className="relative rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+      {/* Current Image */}
+      <div className="relative aspect-[4/3] w-full">
+        <img
+          src={images[currentIndex]}
+          alt={`Post media ${currentIndex + 1}`}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Navigation Buttons */}
+        {images.length > 1 && (
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 w-8 h-8"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 w-8 h-8"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </>
+        )}
+        
+        {/* Image Counter */}
+        {images.length > 1 && (
+          <div className="absolute top-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+            {currentIndex + 1} / {images.length}
+          </div>
+        )}
+      </div>
+      
+      {/* Dots Indicator */}
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentIndex 
+                  ? 'bg-white' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface PostCardProps {
   post: Post;
@@ -469,18 +545,18 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
         <div className="text-sm leading-relaxed text-gray-900 dark:text-white">
           {renderCaptionWithHashtags(post.caption)}
         </div>
-        
-        {/* Media Files */}
+          {/* Media Files - Carousel */}
         {post.mediaFile && post.mediaFile.length > 0 && (
-          <div className="mt-3 grid gap-2">
-            {post.mediaFile.map((media, index) => (
+          <div className="mt-3">
+            {post.mediaFile.length === 1 ? (
               <img
-                key={index}
-                src={media}
-                alt={`Post media ${index + 1}`}
+                src={post.mediaFile[0]}
+                alt="Post media"
                 className="rounded-lg max-w-full h-auto"
               />
-            ))}
+            ) : (
+              <ImageCarousel images={post.mediaFile} />
+            )}
           </div>
         )}
       </div>      {/* Post Actions */}

@@ -35,19 +35,17 @@ export default function UserCard({ user, showFollowButton = true, onFollow }: Us
 
   const handleCardClick = () => {
     router.push(`/profile/${user.username}`);
-  };
-  return (
+  };  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="p-4 rounded-lg border hover:shadow-md transition-all cursor-pointer"
+      className="p-4 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer"
       style={{ 
-        backgroundColor: 'hsl(var(--color-card))',
-        borderColor: 'hsl(var(--color-border))' 
+        backgroundColor: 'hsl(var(--color-muted) / 0.3)'
       }}
       onClick={handleCardClick}
-    >      <div className="flex items-center justify-between">
+    ><div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 flex-1 min-w-0">
           {/* Profile Picture */}
           <div className="relative shrink-0">
