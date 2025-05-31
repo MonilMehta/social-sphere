@@ -30,7 +30,7 @@ import { Separator } from '@/components/ui/separator';
 import { usersAPI } from '@/lib/api';
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
@@ -79,25 +79,57 @@ export default function SettingsPage() {
       reader.readAsDataURL(file);
     }
   };
-
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveLoading(true);
 
     try {
+      let profileImageUrl = null;
+
+      // First, upload the profile image to AWS if a new image is selected
+      if (profileData.profilepic) {
+        const imageFormData = new FormData();
+        imageFormData.append('profilepic', profileData.profilepic);
+
+        const uploadResponse = await fetch('/api/upload/profile', {
+          method: 'POST',
+          body: imageFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.message || 'Failed to upload profile image');
+        }
+
+        const uploadResult = await uploadResponse.json();
+        profileImageUrl = uploadResult.data.url;
+      }
+
+      // Then update the profile with the new image URL
       const formData = new FormData();
       formData.append('name', profileData.name);
       formData.append('bio', profileData.bio);
       formData.append('location', profileData.location);
       formData.append('interests', profileData.interests);
-      
-      if (profileData.profilepic) {
-        formData.append('profilepic', profileData.profilepic);
+        if (profileImageUrl) {
+        formData.append('profilepic', profileImageUrl);
       }
 
       await usersAPI.updateProfile(formData);
       
-      // Show success message or redirect
+      // Refresh user data to reflect changes
+      await refreshUser();
+        // Clear the preview and reset form
+      setProfilePreview(null);
+      setProfileData(prev => ({ ...prev, profilepic: null }));
+      
+      // Reset file input
+      const fileInput = document.getElementById('profilepic') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+      // Show success message
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -198,8 +230,7 @@ export default function SettingsPage() {
             <form onSubmit={handleProfileSubmit} className="space-y-6">
               {/* Profile Picture */}
               <div className="flex items-center space-x-6">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4" style={{ borderColor: 'hsl(var(--color-border))' }}>
+                <div className="relative">                  <div className="w-24 h-24 rounded-full overflow-hidden border-4" style={{ borderColor: 'hsl(var(--color-border))' }}>
                     {profilePreview || user.profilepic ? (
                       <Image
                         src={profilePreview || user.profilepic || '/logo.png'}
@@ -207,6 +238,9 @@ export default function SettingsPage() {
                         width={96}
                         height={96}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/logo.png';
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'hsl(var(--color-muted))' }}>

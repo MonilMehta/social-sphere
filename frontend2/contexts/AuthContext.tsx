@@ -10,9 +10,11 @@ interface User {
   username: string;
   email: string;
   profilepic?: string;
+  bio?: string;
+  location?: string;
+  interests: string[];
   isPrivate: boolean;
   isVerified: boolean;
-  interests: string[];
   isOnline: boolean;
   searchScore: number;
   lastSeen: string;
@@ -26,6 +28,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   signup: (name: string, username: string, email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -137,19 +140,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      if (!token) return;
+
+      const response = await axios.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
+      setUser(response.data.data);
+    } catch (error) {
+      console.error('User refresh failed:', error);
+    }
+  };
+
   const logout = () => {
     Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN);
     Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN);
     setUser(null);
     window.location.href = '/';
   };
-
   const value = {
     user,
     loading,
     login,
     logout,
     signup,
+    refreshUser,
     isAuthenticated: !!user,
   };
 

@@ -160,7 +160,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const updateAccount = asyncHandler(async (req, res) => {
-  const { name, email, bio } = req.body;
+  const { name, email, bio, profilepic: profilepicUrl, location, interests } = req.body;
 
   let profilepic;
   const profilepicLocalPath = req.file?.path;
@@ -170,13 +170,16 @@ const updateAccount = asyncHandler(async (req, res) => {
       name ||
       email ||
       bio ||
+      location ||
+      interests ||
       profilepicLocalPath ||
-      profilepicLocalPath.trim() === ""
+      profilepicUrl
     )
   ) {
     throw new ApiError(400, "At least one field is required");
   }
 
+  // Handle file upload (existing functionality)
   if (profilepicLocalPath && profilepicLocalPath.trim() !== "") {
     profilepic = await uploadFileOnCloudinary(profilepicLocalPath);
     if (!profilepic.url) {
@@ -194,6 +197,13 @@ const updateAccount = asyncHandler(async (req, res) => {
       console.log("Old profile photo deleted? ", deletedprofilepic);
     }
   }
+
+  // Parse interests if it's a string
+  let parsedInterests = interests;
+  if (typeof interests === 'string' && interests.trim()) {
+    parsedInterests = interests.split(',').map(interest => interest.trim()).filter(interest => interest);
+  }
+
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -201,7 +211,9 @@ const updateAccount = asyncHandler(async (req, res) => {
         name: name || req.user.name,
         email: email || req.user.email,
         bio: bio || req.user.bio,
-        profilepic: profilepic?.url || req.user.profilepic,
+        location: location || req.user.location,
+        interests: parsedInterests || req.user.interests,
+        profilepic: profilepic?.url || profilepicUrl || req.user.profilepic,
       },
     },
     {
