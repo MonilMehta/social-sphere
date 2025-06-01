@@ -139,19 +139,27 @@ export default function SignupPage(): React.JSX.Element {
           backgroundColor: 'hsl(var(--color-card) / 0.9)',
           borderColor: 'hsl(var(--color-border))' 
         }}
-      >
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+      >        <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 relative">
-                <Image
-                  src="/logo.png"
-                  alt="SocialFlow Logo"
-                  width={100}
-                  height={80}
-                  className="rounded-lg"
-                />
-              </div>
+            <Link href="/" className="flex items-center">
+              {/* Light mode logo */}
+              <Image
+                src="/logo.png"
+                alt="Social Sphere"
+                width={200}
+                height={60}
+                className="h-32 w-auto dark:hidden"
+                priority
+              />
+              {/* Dark mode logo */}
+              <Image
+                src="/logo-dark.png"
+                alt="Social Sphere"
+                width={200}
+                height={60}
+                className="h-32 w-auto hidden dark:block"
+                priority
+              />
             </Link>
             <div className="flex items-center space-x-4">
               <ThemeToggle />
@@ -390,36 +398,30 @@ export default function SignupPage(): React.JSX.Element {
               {/* Submit Error */}
               {errors.submit && (
                 <div className="text-sm text-red-500 text-center">{errors.submit}</div>
-              )}
-
-              {/* Submit Button */}
+              )}              {/* Submit Button */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                whileTap={{ scale: isLoading ? 1 : 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-3 text-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-full py-3 text-lg cursor-pointer transition-all duration-300 shadow-xl hover:shadow-2xl focus:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0"
                   style={{
                     background: 'hsl(var(--color-primary))',
-                    color: 'hsl(var(--color-primary-foreground))'
+                    color: 'hsl(var(--color-primary-foreground))',
+                    boxShadow: '0 10px 25px -5px hsl(var(--color-primary) / 0.4), 0 8px 10px -6px hsl(var(--color-primary) / 0.2)'
                   }}
                 >
                   {isLoading ? 'Creating Account...' : 'Create Account'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </motion.div>
-            </form>
-
-            {/* Divider */}
+            </form>            {/* Divider */}
             <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t" style={{ borderColor: 'hsl(var(--color-border))' }} />
-              </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2" style={{ 
-                  backgroundColor: 'hsl(var(--color-card))',
+                <span style={{ 
                   color: 'hsl(var(--color-muted-foreground))'
                 }}>
                   Already have an account?

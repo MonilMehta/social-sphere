@@ -14,8 +14,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 interface NavbarProps {
   onSearchToggle?: () => void;
@@ -24,6 +26,7 @@ interface NavbarProps {
 
 export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
   const { user, logout } = useAuth();
+  const { theme, resolvedTheme } = useTheme();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3); // Mock notification count
   const searchRef = useRef<HTMLDivElement>(null);
@@ -57,9 +60,26 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center"
           >
-            <h1 className="text-3xl font-bold text-primary tracking-tight">
-              SocialFlow
-            </h1>
+            <Link href="/home" className="flex items-center">
+              {/* Light mode logo */}
+              <Image
+                src="/logo.png"
+                alt="Social Sphere"
+                width={200}
+                height={100}
+                className="h-32 w-auto dark:hidden"
+                priority
+              />
+              {/* Dark mode logo */}
+              <Image
+                src="/logo-dark.png"
+                alt="Social Sphere"
+                width={200}
+                height={100}
+                className="h-32 w-auto hidden dark:block"
+                priority
+              />
+            </Link>
           </motion.div>
 
           {/* Desktop Search */}
@@ -118,27 +138,68 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
             {/* Messages */}
             <Button variant="ghost" size="sm">
               <MessageCircle className="w-5 h-5" />
-            </Button>
-
-            {/* User Menu */}
+            </Button>            {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <User className="w-4 h-4" />
+                <Button variant="ghost" size="sm" className="flex items-center space-x-2">                  <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+                    {user?.profilepic ? (
+                      <>
+                        <Image
+                          src={user.profilepic}
+                          alt={user.name || user.username || 'Profile'}
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            const fallback = img.parentElement?.querySelector('.fallback-icon');
+                            if (img.parentElement && fallback) {
+                              img.style.display = 'none';
+                              (fallback as HTMLElement).style.display = 'flex';
+                            }
+                          }}
+                        />
+                        <User className="w-4 h-4 fallback-icon" style={{ display: 'none' }} />
+                      </>
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
                   </div>
                   <span className="hidden sm:inline">{user?.name || user?.username}</span>
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              </DropdownMenuTrigger>              <DropdownMenuContent align="end" className="w-56">
                 <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
+                    {user?.profilepic ? (
+                      <>
+                        <Image
+                          src={user.profilepic}
+                          alt={user.name || user.username || 'Profile'}
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            const fallback = img.parentElement?.querySelector('.fallback-icon');
+                            if (img.parentElement && fallback) {
+                              img.style.display = 'none';
+                              (fallback as HTMLElement).style.display = 'flex';
+                            }
+                          }}
+                        />
+                        <User className="w-4 h-4 fallback-icon" style={{ display: 'none' }} />
+                      </>
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
+                  </div>
                   <div className="flex flex-col space-y-1 leading-none">
                     <p className="font-medium">{user?.name}</p>
                     <p className="text-xs text-muted-foreground">
                       @{user?.username}
                     </p>
                   </div>
-                </div>                <DropdownMenuSeparator />
+                </div><DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href={`/profile/${user?.username}`}>
                     <User className="mr-2 h-4 w-4" />

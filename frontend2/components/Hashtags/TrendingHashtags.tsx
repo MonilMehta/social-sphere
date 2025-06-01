@@ -111,7 +111,7 @@ export function TrendingHashtags({ className, limit = 10 }: TrendingHashtagsProp
                 </div>
                 <div>
                   <p className="font-medium text-sm group-hover:text-primary transition-colors">
-                    #{hashtag.hashtag}
+                    {hashtag.hashtag}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {formatCount(hashtag.count)} posts

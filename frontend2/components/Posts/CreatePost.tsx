@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Image, X, Loader2, Hash, Globe, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -224,10 +224,15 @@ export function CreatePost({ onPostCreated, className }: CreatePostProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* User Avatar and Input */}
+        <form onSubmit={handleSubmit} className="space-y-4">          {/* User Avatar and Input */}
           <div className="flex space-x-3">
             <Avatar className="w-10 h-10">
+              {user?.profilepic && (
+                <AvatarImage 
+                  src={user.profilepic} 
+                  alt={user.name || user.username || 'Profile'} 
+                />
+              )}
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {user?.name?.[0]?.toUpperCase() || 'U'}
               </AvatarFallback>

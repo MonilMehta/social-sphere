@@ -98,16 +98,25 @@ export default function Login() {
       >
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 relative">
-                <Image
-                  src="/logo.png"
-                  alt="SocialFlow Logo"
-                  width={100}
-                  height={80}
-                  className="rounded-lg"
-                />
-              </div>
+            <Link href="/home" className="flex items-center">
+              {/* Light mode logo */}
+              <Image
+                src="/logo.png"
+                alt="Social Sphere"
+                width={200}
+                height={100}
+                className="h-32 w-auto dark:hidden"
+                priority
+              />
+              {/* Dark mode logo */}
+              <Image
+                src="/logo-dark.png"
+                alt="Social Sphere"
+                width={200}
+                height={100}
+                className="h-32 w-auto hidden dark:block"
+                priority
+              />
             </Link>
             <div className="flex items-center space-x-4">              <ThemeToggle />              <Link href="/" className="cursor-pointer">
                 <Button variant="outline" size="sm" className="transition-all duration-300 hover:scale-105 hover:shadow-lg" style={{
@@ -284,18 +293,14 @@ export default function Login() {
               </motion.div>
             </form>            {/* Divider */}
             <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t" style={{ borderColor: 'hsl(var(--color-border))' }} />
-              </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2" style={{ 
-                  backgroundColor: 'hsl(var(--color-card))',
+                <span style={{ 
                   color: 'hsl(var(--color-muted-foreground))'
                 }}>
                   Don't have an account?
                 </span>
               </div>
-            </div>            {/* Sign up link */}
+            </div>{/* Sign up link */}
             <div className="text-center">
               <Link href="/signup" className="cursor-pointer">
                 <motion.div
