@@ -98,19 +98,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password,
       });
 
-      const { accessToken, refreshToken, user: userData } = response.data.data;
-      
-      // Store tokens in cookies with proper expiry
+      const { accessToken, refreshToken, user: userData } = response.data.data;        // Store tokens in cookies with proper expiry
       Cookies.set(API_CONFIG.COOKIES.ACCESS_TOKEN, accessToken, { 
         expires: API_CONFIG.COOKIES.ACCESS_TOKEN_EXPIRY,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        secure: true,
+        sameSite: 'lax'
       });
       
       Cookies.set(API_CONFIG.COOKIES.REFRESH_TOKEN, refreshToken, { 
         expires: API_CONFIG.COOKIES.REFRESH_TOKEN_EXPIRY,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        secure: true,
+        sameSite: 'lax'
       });
       
       setUser(userData);
