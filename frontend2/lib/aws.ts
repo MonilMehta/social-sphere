@@ -55,7 +55,6 @@ export const uploadImageToS3 = async (
       Body: buffer,
       ContentType: file.type,
       ContentDisposition: 'inline',
-      // Make the file publicly readable
       // Set cache control
       CacheControl: 'max-age=31536000', // 1 year
       // Optional: Add metadata

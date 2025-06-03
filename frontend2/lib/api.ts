@@ -337,7 +337,6 @@ export const chatAPI = {
     const response = await api.get(`${API_CONFIG.ENDPOINTS.CHATS}?page=${page}&limit=${limit}`);
     return response.data.data;
   },
-
   // Create chat
   createChat: async (participantId?: string, participants?: string[], isGroupChat = false, chatName?: string): Promise<Chat> => {
     const payload: any = { isGroupChat };
@@ -346,7 +345,10 @@ export const chatAPI = {
       payload.participants = participants;
       payload.chatName = chatName;
     } else if (participantId) {
-      payload.participantId = participantId;
+      // For one-on-one chats, use participants array format
+      payload.participants = [participantId];
+    } else if (participants) {
+      payload.participants = participants;
     }
     
     const response = await api.post(API_CONFIG.ENDPOINTS.CHATS, payload);
@@ -403,16 +405,10 @@ export const messagesAPI = {
     });
     return response.data.data;
   },
-
   // Get messages for a chat
   getChatMessages: async (chatId: string, page = 1, limit = 50): Promise<{ messages: Message[]; pagination: PaginationInfo }> => {
     const response = await api.get(`${API_CONFIG.ENDPOINTS.CHAT_MESSAGES}/${chatId}?page=${page}&limit=${limit}`);
     return response.data.data;
-  },
-
-  // Mark messages as read
-  markAsRead: async (chatId: string): Promise<void> => {
-    await api.post(`${API_CONFIG.ENDPOINTS.MESSAGES}/chat/${chatId}/read`);
   },
 
   // Edit message

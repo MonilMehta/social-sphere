@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
@@ -22,7 +22,8 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { usersAPI, postsAPI, followAPI, User, Post } from '@/lib/api';
+import { usersAPI, postsAPI, followAPI, chatAPI, User, Post } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface UserProfile {
   _id: string;
@@ -46,6 +47,8 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const params = useParams();
+  const router = useRouter();
+  const { user: currentUser } = useAuth();
   const username = params.username as string;
   
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -53,6 +56,7 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'likes'>('posts');
 
   useEffect(() => {
@@ -78,7 +82,6 @@ export default function ProfilePage() {
       setLoading(false);
     }
   };
-
   const handleFollowToggle = async () => {
     if (!userProfile || followLoading) return;
 
@@ -96,6 +99,32 @@ export default function ProfilePage() {
       console.error('Failed to toggle follow:', error);
     } finally {
       setFollowLoading(false);
+    }
+  };  const handleStartMessage = async () => {
+    if (!userProfile || !currentUser || messageLoading) return;
+
+    // Don't allow messaging yourself
+    if (userProfile._id === currentUser._id) return;
+
+    setMessageLoading(true);
+    try {
+      console.log('Creating chat with user:', userProfile._id);
+      console.log('Current user:', currentUser._id);
+      
+      // Create or get existing chat with this user
+      const chat = await chatAPI.createChat(userProfile._id);
+      console.log('Chat created/found:', chat);
+      
+      // Navigate to the chat page
+      router.push(`/chat/${chat._id}`);
+    } catch (error: any) {
+      console.error('Failed to create chat:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      
+      // Show user-friendly error message
+      alert('Failed to start conversation. Please try again.');
+    } finally {
+      setMessageLoading(false);
     }
   };
 
@@ -188,29 +217,48 @@ export default function ProfilePage() {
                   {userProfile.isPrivate && (
                     <Lock className="w-5 h-5 text-gray-500" />
                   )}
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Button
-                    onClick={handleFollowToggle}
-                    disabled={followLoading}
-                    variant={isFollowing ? 'outline' : 'default'}
-                    className="min-w-[100px]"
-                  >
-                    {followLoading ? (
-                      <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
-                    ) : isFollowing ? (
-                      <>
-                        <UserCheck className="w-4 h-4 mr-2" />
-                        Following
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Follow
-                      </>
-                    )}
-                  </Button>
+                </div>                <div className="flex items-center space-x-2">
+                  {/* Only show Message and Follow buttons if viewing someone else's profile */}
+                  {currentUser && userProfile._id !== currentUser._id && (
+                    <>
+                      <Button
+                        onClick={handleStartMessage}
+                        disabled={messageLoading}
+                        variant="outline"
+                        className="min-w-[100px]"
+                      >
+                        {messageLoading ? (
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <MessageCircle className="w-4 h-4 mr-2" />
+                            Message
+                          </>
+                        )}
+                      </Button>
+                      
+                      <Button
+                        onClick={handleFollowToggle}
+                        disabled={followLoading}
+                        variant={isFollowing ? 'outline' : 'default'}
+                        className="min-w-[100px]"
+                      >
+                        {followLoading ? (
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+                        ) : isFollowing ? (
+                          <>
+                            <UserCheck className="w-4 h-4 mr-2" />
+                            Following
+                          </>
+                        ) : (
+                          <>
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            Follow
+                          </>
+                        )}
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
 

@@ -75,19 +75,25 @@ export default function SignupPage(): React.JSX.Element {
           const uploadResponse = await fetch('/api/upload/profile', {
             method: 'POST',
             body: formData,
-          });
-
-          if (uploadResponse.ok) {
+          });          if (uploadResponse.ok) {
             const uploadData = await uploadResponse.json();
-            profilePictureUrl = uploadData.url;
+            console.log('Upload response:', uploadData);
+            profilePictureUrl = uploadData.data.url;
           } else {
             throw new Error('Failed to upload profile image');
           }
-          setUploadingImage(false);
-        }
+          setUploadingImage(false);        }
 
         // Register user with optional profile picture
-        const response = await fetch('https://social-sphere-xzkh.onrender.com/api/v1/users/register', {
+        console.log('Starting user registration with data:', {
+          name: formData.fullName,
+          username: formData.username,
+          email: formData.email,
+          password: '***',
+          ...(profilePictureUrl && { profilepic: profilePictureUrl }),
+        });
+        
+        const response = await fetch('http://localhost:8000/api/v1/users/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -97,7 +103,7 @@ export default function SignupPage(): React.JSX.Element {
             username: formData.username,
             email: formData.email,
             password: formData.password,
-            ...(profilePictureUrl && { profilePicture: profilePictureUrl }),
+            ...(profilePictureUrl && { profilepic: profilePictureUrl }),
           }),
         });
 

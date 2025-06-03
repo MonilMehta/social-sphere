@@ -57,11 +57,8 @@ export default function ChatPage() {
           chatAPI.getChatById(chatId),
           messagesAPI.getChatMessages(chatId)
         ]);
-        
-        setChat(chatResponse);
+          setChat(chatResponse);
         setMessages(messagesResponse.messages);
-          // Mark messages as read
-        await messagesAPI.markAsRead(chatId);
       } catch (error) {
         console.error('Error fetching chat data:', error);
         router.push('/home');
