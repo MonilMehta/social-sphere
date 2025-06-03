@@ -29,6 +29,10 @@ import chatRouter from "./routes/chat.routes.js";
 import messageRouter from "./routes/message.routes.js";
 
 // declare routes here
+//health check route
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({ message: "OK" });
+});
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/replies", replyRouter);
