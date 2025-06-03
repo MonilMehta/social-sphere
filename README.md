@@ -1,9 +1,6 @@
 # SocialFlow
-
+NodeJS,NextJS,ExpressJS,MongoDB
 [![Star History Chart](https://api.star-history.com/svg?repos=your-username/socialflow&type=Date)](https://star-history.com/#your-username/socialflow&Date)
-
-A modern social media platform designed to prioritize authentic connections and meaningful conversations. Built as part of BTech Curriculum.
-
 ![SocialFlow Demo](https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif)
 
 ## 🚀 Features
