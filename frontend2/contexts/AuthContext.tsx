@@ -38,27 +38,49 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const getToken = (tokenName: string): string | undefined => {
   // First try to get from cookies
   const cookieToken = Cookies.get(tokenName);
+  console.log(`getToken - Cookie for ${tokenName}:`, cookieToken ? 'found' : 'not found');
+  
   if (cookieToken) {
+    console.log(`getToken - Using cookie token for ${tokenName}`);
     return cookieToken;
   }
   
   // Fallback to localStorage
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(tokenName) || undefined;
+    const localToken = localStorage.getItem(tokenName);
+    console.log(`getToken - localStorage for ${tokenName}:`, localToken ? 'found' : 'not found');
+    
+    if (localToken) {
+      console.log(`getToken - Using localStorage token for ${tokenName}`);
+      return localToken;
+    }
   }
   
+  console.log(`getToken - No token found for ${tokenName} in either storage`);
   return undefined;
 };
 
 // Utility function to set token in both cookies and localStorage
 const setToken = (tokenName: string, tokenValue: string, options: any) => {
+  console.log(`setToken - Setting ${tokenName}...`);
+  
   // Set in cookies
   Cookies.set(tokenName, tokenValue, options);
+  console.log(`setToken - Cookie set for ${tokenName}`);
   
   // Set in localStorage as fallback
   if (typeof window !== 'undefined') {
     localStorage.setItem(tokenName, tokenValue);
+    console.log(`setToken - localStorage set for ${tokenName}`);
+    
+    // Immediately verify it was set
+    const verification = localStorage.getItem(tokenName);
+    console.log(`setToken - Verification: localStorage ${tokenName} =`, verification ? 'stored successfully' : 'FAILED to store');
   }
+  
+  // Also verify cookie was set
+  const cookieVerification = Cookies.get(tokenName);
+  console.log(`setToken - Verification: cookie ${tokenName} =`, cookieVerification ? 'stored successfully' : 'FAILED to store');
 };
 
 // Utility function to remove token from both cookies and localStorage
@@ -155,8 +177,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         secure: true,
         sameSite: 'lax'
       });
+        console.log('Login successful - tokens stored in cookies and localStorage');
       
-      console.log('Login successful - tokens stored in cookies and localStorage');
+      // Verify tokens are accessible immediately
+      setTimeout(() => {
+        const verifyAccessToken = getToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
+        const verifyRefreshToken = getToken(API_CONFIG.COOKIES.REFRESH_TOKEN);
+        console.log('Post-login verification:');
+        console.log('Access token accessible:', !!verifyAccessToken);
+        console.log('Refresh token accessible:', !!verifyRefreshToken);
+      }, 100);
       
       setUser(userData);
       return { success: true, message: response.data.message };
