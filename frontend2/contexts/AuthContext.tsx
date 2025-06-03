@@ -94,11 +94,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!token) {
         setLoading(false);
         return;
-      }
-
-      // Verify token and get user data
+      }      // Verify token and get user data
       const response = await axios.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
-      setUser(response.data.data);    } catch (error) {
+      setUser(response.data.data);
+    } catch (error) {
       console.error('Auth check failed:', error);
       Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN, { 
         secure: true, 
@@ -120,9 +119,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await axios.post(API_CONFIG.ENDPOINTS.LOGIN, {
         email,
         password,
-      });
-
-      const { accessToken, refreshToken, user: userData } = response.data.data;        // Store tokens in cookies with proper expiry
+      });      const { accessToken, refreshToken, user: userData } = response.data.data;
+      
+      // Store tokens in cookies with proper expiry
       Cookies.set(API_CONFIG.COOKIES.ACCESS_TOKEN, accessToken, { 
         expires: API_CONFIG.COOKIES.ACCESS_TOKEN_EXPIRY,
         secure: true,
@@ -136,6 +135,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         sameSite: 'lax',
         path: '/'
       });
+      
+      // Debug: Verify cookies were set
+      console.log('Login - Cookies set. Verifying...');
+      console.log('Document cookies after setting:', document.cookie);
+      console.log('Access token from js-cookie:', Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN));
+      console.log('Refresh token from js-cookie:', Cookies.get(API_CONFIG.COOKIES.REFRESH_TOKEN));
       
       setUser(userData);
       return { success: true, message: response.data.message };
