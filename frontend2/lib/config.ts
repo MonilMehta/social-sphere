@@ -3,7 +3,7 @@
 
 export const API_CONFIG = {
   // Base URL for the API
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
   
   // API endpoints
   ENDPOINTS: {

@@ -64,7 +64,7 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
               {/* Light mode logo */}
               <Image
                 src="/logo.png"
-                alt="Social Sphere"
+                alt="socialflow"
                 width={200}
                 height={100}
                 className="h-32 w-auto dark:hidden"
@@ -73,7 +73,7 @@ export function Navbar({ onSearchToggle, isSearchVisible }: NavbarProps) {
               {/* Dark mode logo */}
               <Image
                 src="/logo-dark.png"
-                alt="Social Sphere"
+                alt="socialflow"
                 width={200}
                 height={100}
                 className="h-32 w-auto hidden dark:block"

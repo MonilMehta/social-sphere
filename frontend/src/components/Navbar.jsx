@@ -50,7 +50,7 @@ const Navbar = () => {
           <div className="flex justify-center items-center">
             <Svg1 />
             <span className="ml-2 text-2xl font-bold font-mono">
-              Social Sphere
+              Social Flow
             </span>
           </div>
           <div className="block md:hidden">

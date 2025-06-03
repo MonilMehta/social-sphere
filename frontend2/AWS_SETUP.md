@@ -1,6 +1,6 @@
 # AWS S3 Setup for Profile Image Uploads
 
-This guide explains how to set up AWS S3 for profile image uploads in the Social Sphere application.
+This guide explains how to set up AWS S3 for profile image uploads in the SocialFlow application.
 
 ## Prerequisites
 

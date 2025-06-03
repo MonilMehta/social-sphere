@@ -24,7 +24,7 @@ const Landing = () => {
             transition={{ delay: 2, duration: 0.5 }}
             className="company-name"
           >
-            Social Sphere, Inc.
+            socialflow, Inc.
           </motion.span>
         </motion.div>
         <motion.div
@@ -81,7 +81,7 @@ const Landing = () => {
         <nav>
           <ul>{/* Add your navigation links here */}</ul>
         </nav>
-        <span>&copy; Social Sphere, Inc.</span>
+        <span>&copy; socialflow, Inc.</span>
       </footer>
     </div>
   );

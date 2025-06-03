@@ -1,7 +1,6 @@
-{
-  "name": "social_sphere",
+{  "name": "socialflow_backend",
   "version": "1.0.0",
-  "description": "a backend for a social media platform - Social Sphere",
+  "description": "a backend for a social media platform - SocialFlow",
   "type": "module",
   "main": "index.js",
   "scripts": {

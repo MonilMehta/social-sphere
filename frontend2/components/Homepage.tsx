@@ -57,7 +57,7 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-bold text-xl text-gray-900 dark:text-white">SocialSphere</span>
+            <span className="font-bold text-xl text-gray-900 dark:text-white">SocialFlow</span>
           </div>
 
           {/* Search Bar */}

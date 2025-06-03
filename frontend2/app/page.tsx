@@ -479,7 +479,7 @@ export default function Home() {
                 {/* Light mode logo */}
                 <Image
                   src="/logo.png"
-                  alt="Social Sphere"
+                  alt="Social Flow"
                   width={200}
                   height={100}
                   className="h-32 w-auto dark:hidden"
@@ -488,7 +488,7 @@ export default function Home() {
                 {/* Dark mode logo */}
                 <Image
                   src="/logo-dark.png"
-                  alt="Social Sphere"
+                  alt="socialflow"
                   width={200}
                   height={100}
                   className="h-32 w-auto hidden dark:block"
@@ -855,7 +855,7 @@ export default function Home() {
                 />
                 <Image
                   src="/logo-dark.png"
-                  alt="Social Sphere"
+                  alt="socialflow"
                   width={200}
                   height={100}
                   className="h-32 w-auto hidden dark:block"

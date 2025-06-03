@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SocialSphere - Connect & Share",
-  description: "A modern social media platform to connect with friends and share moments",
+  title: "SocialFlow - Connect & Share",
+  description: "A modern social media platform to connect with friends and share authentic moments",
 };
 
 export default function RootLayout({
