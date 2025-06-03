@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { API_CONFIG } from './config';
 
 // Configure axios instance
@@ -6,6 +7,36 @@ const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   withCredentials: true,
 });
+
+// Add request interceptor to include auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid
+      Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN);
+      
+      // Only redirect if we're in the browser (not during SSR)
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export interface Post {
   _id: string;
