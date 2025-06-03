@@ -407,11 +407,10 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
         allowTaint: true,
         logging: false,
         background: '#ffffff',
-        foreignObjectRendering: false,
-        removeContainer: true,
         height: iframeDoc.body.scrollHeight,
         width: iframeDoc.body.scrollWidth
       });
+    
       
       // Remove iframe
       document.body.removeChild(iframe);

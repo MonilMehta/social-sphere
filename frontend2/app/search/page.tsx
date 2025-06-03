@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search, Filter, Users, Hash, FileText, TrendingUp, ArrowLeft, Loader2 } from 'lucide-react';
@@ -11,7 +11,7 @@ import { searchAPI, SearchResult, TrendingHashtag, Post, User } from '@/lib/api'
 import PostCard from '@/components/Posts/PostCard';
 import UserCard from '@/components/Users/UserCard';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState(searchParams?.get('q') || '');
@@ -374,7 +374,26 @@ export default function SearchPage() {
             </div>
           </motion.div>
         )}
+      </div>    </div>
+  );
+}
+
+function SearchPageFallback() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchPageFallback />}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
