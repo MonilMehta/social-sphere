@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { email, username, name, password } = req.body;
+  const { email, username, name, password, profilepic } = req.body;
 
   if (
     !email ||
@@ -50,6 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
     username: username.toLowerCase(),
     name,
     password,
+    ...(profilepic && { profilepic }),
   });
 
   const createdUser = await User.findById(user._id).select(
