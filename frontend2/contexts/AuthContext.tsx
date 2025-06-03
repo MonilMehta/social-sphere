@@ -41,9 +41,26 @@ axios.defaults.withCredentials = true;
 // Add request interceptor to include auth token
 axios.interceptors.request.use(
   (config) => {
+    // Debug: Check all cookies
+    console.log('All cookies:', document.cookie);
+    console.log('Looking for cookie:', API_CONFIG.COOKIES.ACCESS_TOKEN);
+    
     const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+    console.log('Axios interceptor - Token found:', !!token);
+    console.log('Axios interceptor - Token value:', token ? token.substring(0, 20) + '...' : 'null');
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Axios interceptor - Authorization header set');
+    } else {
+      console.log('Axios interceptor - No token found in cookies');
+      
+      // Try to manually parse the cookie
+      const cookies = document.cookie.split(';');
+      const accessTokenCookie = cookies.find(cookie => 
+        cookie.trim().startsWith(API_CONFIG.COOKIES.ACCESS_TOKEN + '=')
+      );
+      console.log('Manual cookie search result:', accessTokenCookie);
     }
     return config;
   },
@@ -81,11 +98,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Verify token and get user data
       const response = await axios.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
-      setUser(response.data.data);
-    } catch (error) {
+      setUser(response.data.data);    } catch (error) {
       console.error('Auth check failed:', error);
-      Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN);
-      Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN);
+      Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN, { 
+        secure: true, 
+        sameSite: 'lax',
+        path: '/'
+      });
+      Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN, { 
+        secure: true, 
+        sameSite: 'lax',
+        path: '/'
+      });
     } finally {
       setLoading(false);
     }
@@ -102,13 +126,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Cookies.set(API_CONFIG.COOKIES.ACCESS_TOKEN, accessToken, { 
         expires: API_CONFIG.COOKIES.ACCESS_TOKEN_EXPIRY,
         secure: true,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        path: '/'
       });
       
       Cookies.set(API_CONFIG.COOKIES.REFRESH_TOKEN, refreshToken, { 
         expires: API_CONFIG.COOKIES.REFRESH_TOKEN_EXPIRY,
         secure: true,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        path: '/'
       });
       
       setUser(userData);
@@ -148,11 +174,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('User refresh failed:', error);
     }
-  };
-
-  const logout = () => {
-    Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN);
-    Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN);
+  };  const logout = () => {
+    Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN, { 
+      secure: true, 
+      sameSite: 'lax',
+      path: '/'
+    });
+    Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN, { 
+      secure: true, 
+      sameSite: 'lax',
+      path: '/'
+    });
     setUser(null);
     window.location.href = '/';
   };
