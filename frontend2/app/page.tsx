@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import clsx from 'clsx';
+import DiscoBallComponent from "@/components/ui/disco-ball";
 import './globals.css';
 
 // TypeScript interfaces
@@ -600,11 +601,10 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.4 }}
               className="relative max-w-4xl mx-auto"
-            >
-              <div className="bg-white dark:bg-cream-100 rounded-3xl p-12 shadow-minimalist-md border border-cream-200 dark:border-cream-300 transition-all duration-500 hover:scale-[1.02]">
+            >              <div className="bg-white dark:bg-cream-100 rounded-3xl p-12 shadow-minimalist-md border border-cream-200 dark:border-cream-300 transition-all duration-500 hover:scale-[1.02]">
                 <div className="text-center">
-                  <div className="w-20 h-20 bg-cream-300 dark:bg-cream-300 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg hover:scale-110 transition-transform duration-300">
-                    <Heart className="w-10 h-10 text-white dark:text-cream-900 animate-pulse" />
+                  <div className="w-60 h-60 mx-auto mb-6 relative overflow-hidden rounded-full shadow-lg hover:scale-110 transition-all duration-300">
+                    <DiscoBallComponent className="w-full h-full" />
                   </div>
                   <h3 className="text-2xl font-semibold text-cream-900 dark:text-cream-900 mb-4">Your Circle Awaits</h3>
                   <p className="text-cream-700 dark:text-cream-700 text-lg leading-relaxed">
@@ -825,15 +825,16 @@ export default function Home() {
             <p className="text-xl text-cream-700 dark:text-cream-700 mb-10 leading-relaxed">
               Start sharing your private moments in a safe, meaningful environment 
               designed for authentic connections.
-            </p>            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="bg-cream-900 dark:bg-cream-300 text-white dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90 px-8 py-3 text-lg">
+            </p>            
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">              
+                <Link href="/signup">
+                <Button size="lg" className="cursor-pointer bg-cream-900 dark:bg-cream-300 text-cream-50 dark:text-cream-900 hover:bg-cream-900/90 dark:hover:bg-cream-300/90 px-8 py-3 text-lg">
                   Sign Up Free
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
               <Link href="/login">
-                <Button variant="outline" size="lg" className="border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-50 dark:hover:bg-cream-200 px-8 py-3 text-lg">
+                <Button variant="outline" size="lg" className="cursor-pointer border-cream-300 dark:border-cream-300 text-cream-700 dark:text-cream-700 hover:bg-cream-50 dark:hover:bg-cream-200 px-8 py-3 text-lg">
                   Login
                 </Button>
               </Link>
@@ -844,13 +845,21 @@ export default function Home() {
       <footer className="py-16 px-6 border-t border-cream-200 dark:border-cream-200">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">            <div className="flex items-center space-x-3 mb-6 md:mb-0">
-              <div className="w-10 h-10 relative">
+              <div className="w-32 h-32 relative">
                 <Image
                   src="/logo.png"
                   alt="SocialFlow Logo"
-                  width={100}
-                  height={80}
-                  className="rounded-lg"
+                  width={400}
+                  height={200}
+                  className="h-32 dark:hidden"
+                />
+                <Image
+                  src="/logo-dark.png"
+                  alt="Social Sphere"
+                  width={200}
+                  height={100}
+                  className="h-32 w-auto hidden dark:block"
+                  priority
                 />
               </div>
             </div>

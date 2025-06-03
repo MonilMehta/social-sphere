@@ -39,7 +39,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="h-8 w-8 p-0"
+      className="h-8 w-8 p-0 cursor-pointer"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >      {theme === 'light' ? (
         <Moon className="h-4 w-4" />
