@@ -8,7 +8,7 @@ import { MessageCircle, Users, MoreVertical, MessageSquare } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
@@ -44,7 +44,6 @@ export function ChatComponent({ className }: ChatComponentProps) {
   const handleChatClick = (chatId: string) => {
     router.push(`/chat/${chatId}`);
   };
-
   const getChatName = (chat: Chat) => {
     if (chat.isGroupChat) {
       return chat.chatName || 'Group Chat';
@@ -52,6 +51,16 @@ export function ChatComponent({ className }: ChatComponentProps) {
     // For direct messages, show the other participant's name
     const otherParticipant = chat.participants.find(p => p._id !== user?._id);
     return otherParticipant?.name || otherParticipant?.username || 'Unknown User';
+  };
+
+  const getChatAvatarImage = (chat: Chat) => {
+    if (chat.isGroupChat) {
+      // For group chats, we could show a group icon or the first participant's picture
+      // For now, return null to show fallback
+      return null;
+    }
+    const otherParticipant = chat.participants.find(p => p._id !== user?._id);
+    return otherParticipant?.profilepic || null;
   };
 
   const getChatAvatar = (chat: Chat) => {
@@ -100,8 +109,13 @@ export function ChatComponent({ className }: ChatComponentProps) {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleChatClick(chat._id)}
                     className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 border border-transparent hover:border-primary/20"
-                  >
-                    <Avatar className="w-12 h-12">
+                  >                    <Avatar className="w-12 h-12">
+                      {getChatAvatarImage(chat) && (
+                        <AvatarImage 
+                          src={getChatAvatarImage(chat)!} 
+                          alt={getChatName(chat)}
+                        />
+                      )}
                       <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                         {getChatAvatar(chat)}
                       </AvatarFallback>

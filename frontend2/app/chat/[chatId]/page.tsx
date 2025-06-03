@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -121,13 +121,22 @@ export default function ChatPage() {
       console.error('Error refreshing chat:', error);
     }
   };
-
   const getChatName = (chat: Chat) => {
     if (chat.isGroupChat) {
       return chat.chatName || 'Group Chat';
     }
     const otherParticipant = chat.participants.find(p => p._id !== user?._id);
     return otherParticipant?.name || otherParticipant?.username || 'Unknown User';
+  };
+
+  const getChatAvatarImage = (chat: Chat) => {
+    if (chat.isGroupChat) {
+      // For group chats, we could show a group icon or the first participant's picture
+      // For now, return null to show fallback
+      return null;
+    }
+    const otherParticipant = chat.participants.find(p => p._id !== user?._id);
+    return otherParticipant?.profilepic || null;
   };
 
   const getChatAvatar = (chat: Chat) => {
@@ -188,8 +197,13 @@ export default function ChatPage() {
             className="mr-2"
           >
             <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <Avatar className="w-10 h-10">
+          </Button>          <Avatar className="w-10 h-10">
+            {getChatAvatarImage(chat) && (
+              <AvatarImage 
+                src={getChatAvatarImage(chat)!} 
+                alt={getChatName(chat)}
+              />
+            )}
             <AvatarFallback className="bg-primary/10 text-primary font-semibold">
               {getChatAvatar(chat)}
             </AvatarFallback>
