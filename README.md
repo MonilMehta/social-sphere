@@ -80,9 +80,9 @@ npm run dev
 
 ## 📊 Progress & Analytics
 
-![GitHub stars](https://img.shields.io/github/stars/your-username/socialflow?style=social)
-![GitHub forks](https://img.shields.io/github/forks/your-username/socialflow?style=social)
-![GitHub issues](https://img.shields.io/github/issues/your-username/socialflow)
+![GitHub stars](https://img.shields.io/github/stars/MonilMehta/socialflow?style=social)
+![GitHub forks](https://img.shields.io/github/forks/MonilMehta/socialflow?style=social)
+![GitHub issues](https://img.shields.io/github/issues/MonilMehta/socialflow)
 
 ## 🤝 Contributing
 
