@@ -34,6 +34,48 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Utility function to get token with fallback to localStorage
+const getToken = (tokenName: string): string | undefined => {
+  // First try to get from cookies
+  const cookieToken = Cookies.get(tokenName);
+  if (cookieToken) {
+    return cookieToken;
+  }
+  
+  // Fallback to localStorage
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(tokenName) || undefined;
+  }
+  
+  return undefined;
+};
+
+// Utility function to set token in both cookies and localStorage
+const setToken = (tokenName: string, tokenValue: string, options: any) => {
+  // Set in cookies
+  Cookies.set(tokenName, tokenValue, options);
+  
+  // Set in localStorage as fallback
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(tokenName, tokenValue);
+  }
+};
+
+// Utility function to remove token from both cookies and localStorage
+const removeToken = (tokenName: string, options?: any) => {
+  // Remove from cookies
+  if (options) {
+    Cookies.remove(tokenName, options);
+  } else {
+    Cookies.remove(tokenName);
+  }
+  
+  // Remove from localStorage
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(tokenName);
+  }
+};
+
 // Configure axios
 axios.defaults.baseURL = API_CONFIG.BASE_URL;
 axios.defaults.withCredentials = true;
@@ -41,26 +83,13 @@ axios.defaults.withCredentials = true;
 // Add request interceptor to include auth token
 axios.interceptors.request.use(
   (config) => {
-    // Debug: Check all cookies
-    console.log('All cookies:', document.cookie);
-    console.log('Looking for cookie:', API_CONFIG.COOKIES.ACCESS_TOKEN);
-    
-    const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+    const token = getToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
     console.log('Axios interceptor - Token found:', !!token);
-    console.log('Axios interceptor - Token value:', token ? token.substring(0, 20) + '...' : 'null');
-    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       console.log('Axios interceptor - Authorization header set');
     } else {
-      console.log('Axios interceptor - No token found in cookies');
-      
-      // Try to manually parse the cookie
-      const cookies = document.cookie.split(';');
-      const accessTokenCookie = cookies.find(cookie => 
-        cookie.trim().startsWith(API_CONFIG.COOKIES.ACCESS_TOKEN + '=')
-      );
-      console.log('Manual cookie search result:', accessTokenCookie);
+      console.log('Axios interceptor - No token found in cookies or localStorage');
     }
     return config;
   },
@@ -73,8 +102,8 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN);
-      Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN);
+      removeToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      removeToken(API_CONFIG.COOKIES.REFRESH_TOKEN);
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -87,28 +116,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     checkAuthStatus();
-  }, []);
-  const checkAuthStatus = async () => {
+  }, []);  const checkAuthStatus = async () => {
     try {
-      const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      const token = getToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
       if (!token) {
         setLoading(false);
         return;
-      }      // Verify token and get user data
+      }
+
+      // Verify token and get user data
       const response = await axios.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
       setUser(response.data.data);
     } catch (error) {
       console.error('Auth check failed:', error);
-      Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN, { 
-        secure: true, 
-        sameSite: 'lax',
-        path: '/'
-      });
-      Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN, { 
-        secure: true, 
-        sameSite: 'lax',
-        path: '/'
-      });
+      removeToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      removeToken(API_CONFIG.COOKIES.REFRESH_TOKEN);
     } finally {
       setLoading(false);
     }
@@ -121,26 +143,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password,
       });      const { accessToken, refreshToken, user: userData } = response.data.data;
       
-      // Store tokens in cookies with proper expiry
-      Cookies.set(API_CONFIG.COOKIES.ACCESS_TOKEN, accessToken, { 
+      // Store tokens in both cookies and localStorage for fallback
+      setToken(API_CONFIG.COOKIES.ACCESS_TOKEN, accessToken, { 
         expires: API_CONFIG.COOKIES.ACCESS_TOKEN_EXPIRY,
         secure: true,
-        sameSite: 'lax',
-        path: '/'
+        sameSite: 'lax'
       });
       
-      Cookies.set(API_CONFIG.COOKIES.REFRESH_TOKEN, refreshToken, { 
+      setToken(API_CONFIG.COOKIES.REFRESH_TOKEN, refreshToken, { 
         expires: API_CONFIG.COOKIES.REFRESH_TOKEN_EXPIRY,
         secure: true,
-        sameSite: 'lax',
-        path: '/'
+        sameSite: 'lax'
       });
       
-      // Debug: Verify cookies were set
-      console.log('Login - Cookies set. Verifying...');
-      console.log('Document cookies after setting:', document.cookie);
-      console.log('Access token from js-cookie:', Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN));
-      console.log('Refresh token from js-cookie:', Cookies.get(API_CONFIG.COOKIES.REFRESH_TOKEN));
+      console.log('Login successful - tokens stored in cookies and localStorage');
       
       setUser(userData);
       return { success: true, message: response.data.message };
@@ -168,10 +184,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { success: false, message };
     }
   };
-
   const refreshUser = async () => {
     try {
-      const token = Cookies.get(API_CONFIG.COOKIES.ACCESS_TOKEN);
+      const token = getToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
       if (!token) return;
 
       const response = await axios.get(API_CONFIG.ENDPOINTS.CURRENT_USER);
@@ -179,17 +194,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('User refresh failed:', error);
     }
-  };  const logout = () => {
-    Cookies.remove(API_CONFIG.COOKIES.ACCESS_TOKEN, { 
-      secure: true, 
-      sameSite: 'lax',
-      path: '/'
-    });
-    Cookies.remove(API_CONFIG.COOKIES.REFRESH_TOKEN, { 
-      secure: true, 
-      sameSite: 'lax',
-      path: '/'
-    });
+  };
+  const logout = () => {
+    removeToken(API_CONFIG.COOKIES.ACCESS_TOKEN);
+    removeToken(API_CONFIG.COOKIES.REFRESH_TOKEN);
     setUser(null);
     window.location.href = '/';
   };
